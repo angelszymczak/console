@@ -5,6 +5,7 @@ module Console
     def self.load_variables
       ENV['APP_KEY'] = ENV.fetch('APP_KEY', look_up('APP_KEY'))
       ENV['SECRET'] = ENV.fetch('SECRET', look_up('SECRET'))
+      ENV['COMPANY_NAME'] = ENV.fetch('COMPANY_NAME', look_up('COMPANY_NAME'))
     rescue MissingConfigError, MissingVariableError => e
       puts e.message
       exit
@@ -13,7 +14,6 @@ module Console
     end
 
     def self.look_up(variable)
-      binding.pry
       return config[variable] if config.key?(variable)
 
       raise MissingVariableError, "Environment variable #{variable} not provided."
