@@ -71,7 +71,7 @@ module Console
     end
 
     def valid_profile?
-      valid_username? && valid_password?
+      valid_username? && valid_password? && valid_role?
     end
 
     def valid_username?
@@ -115,6 +115,13 @@ module Console
 
     def to_s
       "#{role} -> #{username}"
+    end
+
+    def valid_role?
+      return true if  ROLES.key?(role)
+
+      @errors[:role] = Error.new("Invalid [#{role}] role.")
+      false
     end
 
     def super?
