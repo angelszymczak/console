@@ -22,39 +22,66 @@ describe Console::User do
     end
 
     context 'invalid profile by' do
-      context 'too big username' do
-        let(:username) { 'large' * 100 }
+      context 'username' do
         let(:password) { 'password' }
 
-        subject(:user) { described_class.new(username, password, :super) }
+        context 'too long' do
+          let(:username) { 'large' * 100 }
 
-        it do
-          is_expected.not_to be_valid_profile
-          expect(user.full_error_messages).to eq('Username size must be in [255..8] by [500].')
+          subject(:user) { described_class.new(username, password, :super) }
+
+          it do
+            is_expected.not_to be_valid_profile
+            expect(user.full_error_messages).to eq('Username size must be in [255..8] by [500].')
+          end
+        end
+
+        context 'too short' do
+          let(:username) { 'short' }
+
+          subject(:user) { described_class.new(username, password, :super) }
+
+          it do
+            is_expected.not_to be_valid_profile
+            expect(user.full_error_messages).to eq('Username size must be in [255..8] by [5].')
+          end
+        end
+
+        context 'whit whitespaces' do
+          let(:username) { 'user name' }
+
+          subject(:user) { described_class.new(username, password, :super) }
+
+          it do
+            is_expected.not_to be_valid_profile
+            expect(user.full_error_messages).to eq('Username can\'t have whitespaces.')
+          end
         end
       end
 
-      context 'too short username' do
-        let(:username) { 'short' }
-        let(:password) { 'password' }
-
-        subject(:user) { described_class.new(username, password, :super) }
-
-        it do
-          is_expected.not_to be_valid_profile
-          expect(user.full_error_messages).to eq('Username size must be in [255..8] by [5].')
-        end
-      end
-
-      context 'too short password' do
+      context 'password' do
         let(:username) { 'username' }
-        let(:password) { 'pass' }
 
-        subject(:user) { described_class.new(username, password, :super) }
+        context 'to short' do
+          let(:password) { 'pass' }
 
-        it do
-          is_expected.not_to be_valid_profile
-          expect(user.full_error_messages).to eq('Password must have [8] characters.')
+          subject(:user) { described_class.new(username, password, :super) }
+
+          it do
+            is_expected.not_to be_valid_profile
+            expect(user.full_error_messages).to eq('Password must have [8] characters.')
+          end
+        end
+
+        context 'whit whitespaces' do
+          let(:password) { 'pass word' }
+
+          subject(:user) { described_class.new(username, password, :super) }
+
+          it do
+            is_expected.not_to be_valid_profile
+            expect(user.full_error_messages).to eq('Password can\'t have whitespaces.')
+          end
         end
       end
     end
