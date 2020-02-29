@@ -6,6 +6,7 @@ module Console
 
     def self.setup(persist_file)
       app_login
+      store_setup(persist_file)
     end
 
     def self.app_login
@@ -21,6 +22,20 @@ module Console
       end
     end
 
-    private_class_method :setup, :app_login
+    def self.store_setup(persist_file)
+      store =
+        if persist_file.nil?
+          Store.build([initial_user], initial_directory)
+        elsif Store.exists?(persist_file)
+          Store.load(persist_file)
+        else
+          Store.build([initial_user], initial_directory, persist_file)
+        end
+
+      User.store = store
+      Filesystem.store = store
+    end
+
+    private_class_method :setup, :app_login, :store_setup, :new_storage
   end
 end

@@ -8,6 +8,8 @@ require 'io/console'
 require 'ext/string'
 require 'console/prompt'
 
+require 'forwardable'
+require 'console/store'
+
 module Console
 end
-
