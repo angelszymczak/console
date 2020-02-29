@@ -117,4 +117,42 @@ describe Console::User do
       end
     end
   end
+
+  describe '.login' do
+    let(:store) do
+      instance_double(
+        Console::Store,
+        users: [
+          described_class.new('username_1', 'password_1', :super),
+          described_class.new('username_2', 'password_2', :regular)
+        ]
+      )
+    end
+
+    before { described_class.store = store }
+
+    subject(:user) { described_class.login(username, password) }
+
+    context 'with valid credentials' do
+      let(:username) { 'username_1' }
+      let(:password) { 'password_1' }
+
+      it do
+        expect do
+          is_expected.to eq(described_class.current_user)
+        end.to change{ described_class.current_user }
+      end
+    end
+
+    context 'with invalid credentials' do
+      let(:username) { 'nobody_username' }
+      let(:password) { 'password_1' }
+
+      it do
+        expect do
+          is_expected.to be_nil
+        end.to_not change{ described_class.current_user }
+      end
+    end
+  end
 end
