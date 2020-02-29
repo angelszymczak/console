@@ -7,6 +7,7 @@ module Console
     def self.setup(persist_file)
       app_login
       store_setup(persist_file)
+      initial_login
     end
 
     def self.app_login
@@ -43,23 +44,43 @@ module Console
 
     def self.initial_user
       loop do
-        puts 'Please create first super user:'.important
-
-        print 'Please input [username]: '.ask
-        username = gets.chomp
-
-        print 'Please input [password]: '.ask
-        password = gets.chomp
-
+        username, password = ask_username_password('Please create first super user: ')
         if (user = User.new(username, password, :super)).valid_profile?
           puts "First user [#{user}] was created".success
-          break
+          return user
         else
           puts user.full_error_messages.error
         end
       end
     end
 
-    private_class_method :setup, :app_login, :store_setup, :initial_directory, :initial_user
+    def self.initial_login
+      loop do
+        username, password = ask_username_password('Initial login: ')
+        unless (user = User.login(username, password)).nil?
+          puts "Initial #{user} logged".success
+          break
+        else
+          puts 'Invalid credentials'.error
+        end
+
+        break unless User.current_user.nil?
+      end
+    end
+
+    def self.ask_username_password(label)
+      puts label.important
+
+      print 'Please input [username]: '.ask
+      username = gets.chomp
+
+      print 'Please input [password]: '.ask
+      password = gets.chomp
+
+      [username, password]
+    end
+
+    private_class_method :setup, :app_login, :store_setup, :initial_directory, :initial_user,
+      :initial_login, :ask_username_password
   end
 end
