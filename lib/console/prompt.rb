@@ -13,6 +13,7 @@ module Console
       loop do
         print "Please enter #{ENV.fetch('COMPANY_NAME')} App Key: ".important
         key = STDIN.noecho(&:gets).chomp
+
         if ENV.fetch('APP_KEY') == key
           puts 'App logged'.success
           break
@@ -32,14 +33,33 @@ module Console
           Store.build([initial_user], initial_directory, persist_file)
         end
 
-      User.store = store
       Filesystem.store = store
+      User.store = store
     end
 
     def self.initial_directory
       Filesystem.initial_filesystem
     end
 
-    private_class_method :setup, :app_login, :store_setup, :initial_directory
+    def self.initial_user
+      loop do
+        puts 'Please create first super user:'.important
+
+        print 'Please input [username]: '.ask
+        username = gets.chomp.split(' ').join
+
+        print 'Please input [password]: '.ask
+        password = gets.chomp.split(' ').join
+
+        if (user = User.new(username, password, :super)).valid_profile?
+          puts "First user [#{user}] was created".success
+          break
+        else
+          puts user.full_error_messages.error
+        end
+      end
+    end
+
+    private_class_method :setup, :app_login, :store_setup, :initial_directory, :initial_user
   end
 end
