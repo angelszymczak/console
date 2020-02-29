@@ -46,10 +46,10 @@ module Console
         puts 'Please create first super user:'.important
 
         print 'Please input [username]: '.ask
-        username = gets.chomp.split(' ').join
+        username = gets.chomp
 
         print 'Please input [password]: '.ask
-        password = gets.chomp.split(' ').join
+        password = gets.chomp
 
         if (user = User.new(username, password, :super)).valid_profile?
           puts "First user [#{user}] was created".success

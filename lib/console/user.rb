@@ -18,6 +18,7 @@ module Console
     MAX_NAME_SIZE = 255
     MIN_NAME_SIZE = 8
     PASSWORD_SIZE = 8
+    WHITESPACE = /\s/
 
     ROLES = { super: '#', regular: '$',  read_only: '>' }
 
@@ -37,7 +38,18 @@ module Console
     end
 
     def valid_profile?
-      valid_username_size? && valid_password?
+      valid_username? && valid_password?
+    end
+
+    def valid_username?
+      valid_username_size? && free_blank_field?(:username)
+    end
+
+    def valid_password?
+      return false unless valid_password_size? && free_blank_field?(:password)
+
+      self.password = secure_password(password)
+      true
     end
 
     def valid_username_size?
@@ -49,13 +61,17 @@ module Console
       false
     end
 
-    def valid_password?
-      if password.size >= PASSWORD_SIZE
-        self.password = secure_password(password)
-        return true
-      end
+    def valid_password_size?
+      return true if password.size >= PASSWORD_SIZE
 
       @errors[:password] = Error.new("Password must have [#{PASSWORD_SIZE}] characters.")
+      false
+    end
+
+    def free_blank_field?(field)
+      return true unless self.send(field).match(WHITESPACE)
+
+      @errors[field.to_sym] = Error.new("#{field.capitalize} can't have whitespaces.")
       false
     end
 
