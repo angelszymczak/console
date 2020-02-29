@@ -1,0 +1,37 @@
+#!/usr/bin/env ruby
+
+$:.unshift File.expand_path(File.dirname(__FILE__) + '/../lib')
+
+require 'optparse'
+require 'console'
+
+options = {}
+OptionParser.new do |parser|
+  parser.banner = "Usage: bin/console [--option value]"
+
+  parser.on('-p', '--persisted FILE', 'Persisted mode') do |file|
+    options[:persisted] = file
+  end
+
+  parser.on(
+    '-k',
+    '--key APP_KEY',
+    'Application Key Generator, must be exported to APP_KEY environment variable or config.yml'
+  ) do |seed|
+    options[:seed] = seed
+  end
+
+  parser.on(
+    '-s',
+    '--secret SECRET',
+    'Encrypt Key Generator, must be exported to SECRET environment variable or config.yml'
+    ) do |seed|
+    options[:seed] = seed
+  end
+end.parse!
+
+case options
+when ->(o) { o[:seed] && o.size == 1 } then Console::KeyGenerator.generate!(options[:seed])
+when ->(o) { o[:persisted] && o.size == 1 } then Console::Prompt.run!(options)
+when ->(o) { o.empty? } then Console::Prompt.run!({})
+end
