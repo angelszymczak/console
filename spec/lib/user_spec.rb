@@ -84,6 +84,15 @@ describe Console::User do
           end
         end
       end
+
+      context 'role' do
+        subject(:user) { described_class.new('username', 'password', :none) }
+
+        it do
+          is_expected.not_to be_valid_profile
+          expect(user.full_error_messages).to eq('Invalid [none] role.')
+        end
+      end
     end
   end
 
