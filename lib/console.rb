@@ -11,5 +11,8 @@ require 'console/prompt'
 require 'forwardable'
 require 'console/store'
 
+require 'console/filesystem'
+require 'console/filesystem/folder'
+
 module Console
 end

@@ -36,6 +36,10 @@ module Console
       Filesystem.store = store
     end
 
-    private_class_method :setup, :app_login, :store_setup, :new_storage
+    def self.initial_directory
+      Filesystem.initial_filesystem
+    end
+
+    private_class_method :setup, :app_login, :store_setup, :initial_directory
   end
 end

@@ -4,6 +4,13 @@ module Console
 
     extend Forwardable
 
+    # Build new ´Store´ instance, if ´persist_file´ is present, then will be persisted.
+    #
+    # users [Array<User>]
+    # filesystem [Filesystem::Folder]
+    # persist_file [String]: file name to data persist
+    #
+    # returns [Store]
     def self.build(users, filesystem, persist_file = nil)
       new(users, filesystem).tap do |str|
         unless persist_file.nil?
@@ -17,6 +24,9 @@ module Console
       ::File.exists?(PREFIX_PATH + persist_file)
     end
 
+    # Load serialized store object file
+    #
+    # returns [Store]
     def self.load(persist_file)
       Marshal.load(::File.read(PREFIX_PATH + persist_file))
     rescue ArgumentError
@@ -34,6 +44,7 @@ module Console
       self.filesystem = filesystem
     end
 
+    # Exec a task and then persis if persistible
     def storing
       yield.tap { persist! if persistible? }
     end
@@ -42,6 +53,9 @@ module Console
       !!path
     end
 
+    # Serialize store amd write file
+    #
+    # returns [Serialized<Store>]
     def persist!
       ::File.write(path, Marshal.dump(self))
     rescue => e
