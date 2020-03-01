@@ -75,18 +75,18 @@ describe Console::Commands::Login do
       end
 
       context 'bad arguments' do
-        let(:input) { 'login username password typo' }
+        let(:input) { 'login username password extra_arg' }
 
         it { is_expected.not_to be_valid }
 
         context '#error_message' do
           before { subject.valid? }
 
-          it { expect(subject.error_message).to match(/arguments.*.typo.*./) }
+          it { expect(subject.error_message).to match(/arguments.*.extra_arg.*./) }
         end
       end
 
-      context 'bad opions' do
+      context 'bad options' do
         let(:input) { 'login username password -option=typo' }
 
         it { expect { subject }.to raise_error(Console::Commands::MalFormed, /.-option=typo./) }

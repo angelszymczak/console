@@ -41,14 +41,14 @@ describe Console::Commands::Logout do
     end
 
     context 'invalid command' do
-      let(:input) { 'logout bad_extra_arg' }
+      let(:input) { 'logout extra_arg' }
 
       it { is_expected.not_to be_valid }
 
       context '#error_message' do
         before { subject.valid? }
 
-        it { expect(subject.error_message).to match(/arguments.*.bad_extra_arg/) }
+        it { expect(subject.error_message).to match(/arguments.*.extra_arg/) }
       end
     end
   end
