@@ -2,6 +2,12 @@ module Console
   class Prompt
     def self.run!(options)
       setup(options[:persisted])
+
+      while (input = read_input)
+        next if input.empty?
+
+        puts output(input)
+      end
     end
 
     def self.setup(persist_file)
@@ -12,7 +18,7 @@ module Console
 
     def self.app_login
       loop do
-        print "Please enter #{ENV.fetch('COMPANY_NAME')} App Key: ".important
+        puts "Please enter #{ENV.fetch('COMPANY_NAME')} App Key: ".important
         key = STDIN.noecho(&:gets).chomp
 
         if ENV.fetch('APP_KEY') == key
@@ -80,7 +86,22 @@ module Console
       [username, password]
     end
 
+    def self.read_input
+      print "#{User.current_user.symbol} ".ask
+      gets.chomp
+    end
+
+    def self.output(input)
+      if (cmd = Commands::Command.build!(input)).valid?
+        cmd.exec.success
+      else
+        cmd.error_message.error
+      end
+    rescue Commands::Command::MalFormed => e
+      e.message.error
+    end
+
     private_class_method :setup, :app_login, :store_setup, :initial_directory, :initial_user,
-      :initial_login, :ask_username_password
+      :initial_login, :ask_username_password, :output
   end
 end
