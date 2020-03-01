@@ -24,6 +24,7 @@ require 'console/commands/allowance'
 require 'console/commands/command/session'
 require 'console/commands/command/session/login'
 require 'console/commands/command/session/logout'
+require 'console/commands/command/session/whoami'
 
 module Console
 end
