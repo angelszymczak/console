@@ -2,12 +2,23 @@ module Console
   class Filesystem
     DIRECTORY_SEPARATOR = '/'
 
+    @@store = nil
+    @@pwd = nil
+
     def self.store
-      @@store ||= nil
+      @@store
     end
 
     def self.store=(store)
       @@store = store
+    end
+
+    def self.pwd
+      @@pwd
+    end
+
+    def self.pwd=(folder)
+      @@pwd = folder
     end
 
     # Build a new directory with root name '/'
@@ -17,10 +28,11 @@ module Console
       Folder.new(DIRECTORY_SEPARATOR)
     end
 
-    attr_accessor :name
+     attr_accessor :name, :parent
 
-    def initialize(name)
+    def initialize(name, parent = nil)
       self.name = name
+      self.parent = parent
     end
   end
 end
