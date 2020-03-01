@@ -97,7 +97,7 @@ module Console
       else
         cmd.error_message.error
       end
-    rescue Commands::Command::MalFormed => e
+    rescue Console::Commands::MalFormed => e
       e.message.error
     end
 
