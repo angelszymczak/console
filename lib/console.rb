@@ -26,5 +26,8 @@ require 'console/commands/command/session/login'
 require 'console/commands/command/session/logout'
 require 'console/commands/command/session/whoami'
 
+require 'console/commands/command/user'
+require 'console/commands/command/user/create_user'
+
 module Console
 end

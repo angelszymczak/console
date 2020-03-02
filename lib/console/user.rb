@@ -28,15 +28,23 @@ module Console
       user.login(password)
     end
 
+    def self.create(username, password, role)
+      new(username, password, role.to_sym).tap do |new_user|
+        store.storing { users << new_user if new_user.valid_profile? && new_user.unique? }
+      end
+    end
+
     def self.find_by(username)
       users.find { |u| u.username == username }
     end
+    def_delegator self, :find_by
 
     def self.users
       store.users
     end
+    def_delegator self, :users
 
-    private_class_method :users, :find_by
+    include Comparable
 
     MAX_NAME_SIZE = 255
     MIN_NAME_SIZE = 8
@@ -74,6 +82,21 @@ module Console
       valid_username? && valid_password? && valid_role?
     end
 
+    def <=>(other)
+      username <=> other.username
+    end
+
+    def unique?
+     return true unless users.include?(self)
+
+     @errors[:username] = Error.new("Username [#{username}] has been taken.")
+     false
+    end
+
+    def valid?
+      @errors.empty?
+    end
+
     def valid_username?
       valid_username_size? && free_blank_field?(:username, username)
     end
@@ -109,8 +132,8 @@ module Console
       false
     end
 
-    def full_error_messages
-      @errors.values.join(' ')
+    def error_message
+      @errors.map { |error, msg| msg }.join(' ')
     end
 
     def to_s
