@@ -39,7 +39,7 @@ describe Console::Commands::CreateUser do
           context 'with new username' do
             let(:username) { 'this_is_a_new_user'}
 
-            it '#perform' do
+            it do
               expect(Console::User.find_by(username)).to be_nil
 
               expect do
@@ -52,7 +52,7 @@ describe Console::Commands::CreateUser do
           context 'with taken username' do
             let(:username) { super_user.username }
 
-            it '#perform' do
+            it do
               expect(Console::User.find_by(username)).not_to be_nil
 
               expect do
@@ -72,7 +72,6 @@ describe Console::Commands::CreateUser do
 
         it { expect(subject.error_message).to match(/arguments/) }
       end
-
 
       context 'by extra arguments' do
         let(:input) { 'create_user username password extra arg' }
