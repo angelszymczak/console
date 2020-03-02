@@ -165,19 +165,67 @@ describe Console::User do
     end
   end
 
-  describe '.destroy' do
+  describe '.create' do
     include_context 'Loaded store'
 
-    before { described_class.users << target_user }
+    let(:new_username) { 'new_user' }
+    let(:new_password) { 'password' }
+    let(:new_role) { :regular }
 
-    let(:target_user) { Console::User.new('target_user', 'password', :regular) }
-
-    subject { described_class.destroy(target_user) }
+    subject(:new_user) { described_class.create(new_username, new_password, new_role) }
 
     it do
-      expect(Console::User.find_by(target_user.username)).not_to be_nil
-      is_expected.to eq(target_user)
-      expect(Console::User.find_by(target_user.username)).to be_nil
+      expect(Console::User.find_by(new_username)).to be_nil
+      expect do
+        expect(new_user.username).to eq(new_username)
+        expect(Console::User.find_by(new_username)).not_to be_nil
+      end.to change { Console::User.users.count }.by(1)
+    end
+
+    describe '.find_by' do
+      include_context 'Loaded store'
+
+      let(:user) { described_class.users.sample }
+
+      subject(:target) { described_class.find_by(user.username) }
+
+      it { is_expected.to be(user) }
+    end
+
+    describe '.login' do
+      include_context 'Loaded store'
+
+      before { described_class.users << target_user }
+
+      let(:target_user) { described_class.new('target_user', target_password, :regular) }
+      let(:target_password) { 'password' }
+
+      subject(:logged_user) { described_class.login(target_user.username, target_password) }
+
+      it do
+        expect(Console::User.current_user).not_to be(target_user)
+        expect do
+          is_expected.to eq(target_user)
+        end.to change { Console::User.current_user }
+      end
+    end
+
+    describe '.destroy' do
+      include_context 'Loaded store'
+
+      before { described_class.users << target_user }
+
+      let(:target_user) { described_class.new('target_user', 'password', :regular) }
+
+      subject { described_class.destroy(target_user) }
+
+      it do
+        expect(Console::User.find_by(target_user.username)).not_to be_nil
+        expect do
+          is_expected.to eq(target_user)
+          expect(Console::User.find_by(target_user.username)).to be_nil
+        end.to change { Console::User.users.count }.by(-1)
+      end
     end
   end
 end
