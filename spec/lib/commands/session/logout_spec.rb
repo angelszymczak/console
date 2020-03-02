@@ -13,10 +13,7 @@ describe Console::Commands::Logout do
     context 'valid input' do
       let(:input) { 'logout' }
 
-      it { is_expected.to be_a(described_class) }
-      it { is_expected.to be_valid }
-      it { is_expected.to be_valid_arguments }
-      it { is_expected.to be_valid_options }
+      include_examples 'Valid commands'
 
       context '#exec' do
         it 'allow for all roles' do

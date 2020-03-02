@@ -13,10 +13,7 @@ describe Console::Commands::Login do
     context 'valid input' do
       let(:input) { 'login any_username any_password' }
 
-      it { is_expected.to be_a(described_class) }
-      it { is_expected.to be_valid }
-      it { is_expected.to be_valid_arguments }
-      it { is_expected.to be_valid_options }
+      include_examples 'Valid commands'
 
       context '#exec' do
         context 'allow for all roles' do

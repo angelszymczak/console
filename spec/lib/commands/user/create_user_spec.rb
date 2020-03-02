@@ -13,10 +13,7 @@ describe Console::Commands::CreateUser do
     context 'valid input' do
       let(:input) { 'create_user new_username new_password -role=regular' }
 
-      it { is_expected.to be_a(described_class) }
-      it { is_expected.to be_valid }
-      it { is_expected.to be_valid_arguments }
-      it { is_expected.to be_valid_options }
+      include_examples 'Valid commands'
 
       context '#exec' do
         context 'super user allow to create new user' do
