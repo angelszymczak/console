@@ -55,7 +55,7 @@ module Console
           puts "First user [#{user}] was created".success
           return user
         else
-          puts user.full_error_messages.error
+          puts user.error_message.error
         end
       end
     end

@@ -7,7 +7,7 @@ module Console
         true
       end
 
-      def options_condition
+      def valid_options?
         true
       end
     end

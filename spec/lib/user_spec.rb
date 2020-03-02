@@ -32,7 +32,7 @@ describe Console::User do
 
           it do
             is_expected.not_to be_valid_profile
-            expect(user.full_error_messages).to eq('Username size must be in [255..8] by [500].')
+            expect(user.error_message).to eq('Username size must be in [255..8] by [500].')
           end
         end
 
@@ -43,7 +43,7 @@ describe Console::User do
 
           it do
             is_expected.not_to be_valid_profile
-            expect(user.full_error_messages).to eq('Username size must be in [255..8] by [5].')
+            expect(user.error_message).to eq('Username size must be in [255..8] by [5].')
           end
         end
 
@@ -54,7 +54,7 @@ describe Console::User do
 
           it do
             is_expected.not_to be_valid_profile
-            expect(user.full_error_messages).to eq('Username can\'t have whitespaces.')
+            expect(user.error_message).to eq('Username can\'t have whitespaces.')
           end
         end
       end
@@ -69,7 +69,7 @@ describe Console::User do
 
           it do
             is_expected.not_to be_valid_profile
-            expect(user.full_error_messages).to eq('Password must have [8] characters.')
+            expect(user.error_message).to eq('Password must have [8] characters.')
           end
         end
 
@@ -80,7 +80,7 @@ describe Console::User do
 
           it do
             is_expected.not_to be_valid_profile
-            expect(user.full_error_messages).to eq('Password can\'t have whitespaces.')
+            expect(user.error_message).to eq('Password can\'t have whitespaces.')
           end
         end
       end
@@ -90,7 +90,7 @@ describe Console::User do
 
         it do
           is_expected.not_to be_valid_profile
-          expect(user.full_error_messages).to eq('Invalid [none] role.')
+          expect(user.error_message).to eq('Invalid [none] role.')
         end
       end
     end

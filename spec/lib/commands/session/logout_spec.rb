@@ -41,14 +41,18 @@ describe Console::Commands::Logout do
     end
 
     context 'invalid command' do
-      let(:input) { 'logout extra_arg' }
+      before { is_expected.not_to be_valid }
 
-      it { is_expected.not_to be_valid }
+      context 'by extra arguments' do
+        let(:input) { 'logout extra_arg' }
 
-      context '#error_message' do
-        before { subject.valid? }
+        it { expect(subject.error_message).to match(/arguments.*.extra.*.arg.*./) }
+      end
 
-        it { expect(subject.error_message).to match(/arguments.*.extra_arg/) }
+      context 'by extra options' do
+        let(:input) { 'logout -option=typo' }
+
+        it { expect(subject.error_message).to match(/options.*.typo.*./) }
       end
     end
   end

@@ -39,6 +39,7 @@ describe Console::Commands::Login do
               it '#perform' do
                 expect do
                   is_expected.to match(/Logged.*.#{username}/)
+
                   expect(Console::User.current_user).to eq(regular_user)
                 end.to change { Console::User.current_user }
               end
@@ -62,34 +63,24 @@ describe Console::Commands::Login do
     end
 
     context 'invalid command' do
-      context 'bad arguments' do
+      before { is_expected.not_to be_valid }
+
+      context 'missing arguments' do
         let(:input) { 'login' }
 
-        it { is_expected.not_to be_valid }
-
-        context '#error_message' do
-          before { subject.valid? }
-
-          it { expect(subject.error_message).to match(/arguments/) }
-        end
+        it { expect(subject.error_message).to match(/arguments/) }
       end
 
-      context 'bad arguments' do
-        let(:input) { 'login username password extra_arg' }
+      context 'by extra arguments' do
+        let(:input) { 'login username password extra arg' }
 
-        it { is_expected.not_to be_valid }
-
-        context '#error_message' do
-          before { subject.valid? }
-
-          it { expect(subject.error_message).to match(/arguments.*.extra_arg.*./) }
-        end
+        it { expect(subject.error_message).to match(/arguments.*.extra.*.arg.*./) }
       end
 
-      context 'bad options' do
+      context 'by extra options' do
         let(:input) { 'login username password -option=typo' }
 
-        it { expect { subject }.to raise_error(Console::Commands::MalFormed, /.-option=typo./) }
+        it { expect(subject.error_message).to match(/options.*.typo.*./) }
       end
     end
   end

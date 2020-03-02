@@ -39,34 +39,18 @@ describe Console::Commands::Whoami do
     end
 
     context 'invalid command' do
-      context 'bad arguments' do
-        let(:input) { 'login' }
+      before { is_expected.not_to be_valid }
 
-        it { is_expected.not_to be_valid }
+      context 'by extra arguments' do
+        let(:input) { 'whoami extra arg' }
 
-        context '#error_message' do
-          before { subject.valid? }
-
-          it { expect(subject.error_message).to match(/arguments/) }
-        end
+        it { expect(subject.error_message).to match(/arguments.*.extra.*.arg.*./) }
       end
 
-      context 'extra arguments' do
-        let(:input) { 'whoami extra_arg' }
-
-        it { is_expected.not_to be_valid }
-
-        context '#error_message' do
-          before { subject.valid? }
-
-          it { expect(subject.error_message).to match(/arguments.*.extra_arg.*./) }
-        end
-      end
-
-      context 'bad options' do
+      context 'by extra options' do
         let(:input) { 'whoami -option=typo' }
 
-        it { expect { subject }.to raise_error(Console::Commands::MalFormed, /.-option=typo./) }
+        it { expect(subject.error_message).to match(/options.*.typo.*./) }
       end
     end
   end
