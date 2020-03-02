@@ -1,14 +1,15 @@
 module Console
   module Commands
     class Session < Command
-      OPTIONS = {}
-
       def allow?
         true
       end
 
       def valid_options?
-        true
+        return true if options.empty?
+
+        @errors[:options] = MalFormed.new("Unexpected options: [#{options}].")
+        false
       end
     end
   end
