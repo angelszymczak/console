@@ -164,4 +164,20 @@ describe Console::User do
       end
     end
   end
+
+  describe '.destroy' do
+    include_context 'Loaded store'
+
+    before { described_class.users << target_user }
+
+    let(:target_user) { Console::User.new('target_user', 'password', :regular) }
+
+    subject { described_class.destroy(target_user) }
+
+    it do
+      expect(Console::User.find_by(target_user.username)).not_to be_nil
+      is_expected.to eq(target_user)
+      expect(Console::User.find_by(target_user.username)).to be_nil
+    end
+  end
 end

@@ -34,6 +34,10 @@ module Console
       end
     end
 
+    def self.destroy(user)
+      store.storing { users.delete(user) }
+    end
+
     def self.find_by(username)
       users.find { |u| u.username == username }
     end
@@ -87,10 +91,10 @@ module Console
     end
 
     def unique?
-     return true unless users.include?(self)
+      return true unless users.include?(self)
 
-     @errors[:username] = Error.new("Username [#{username}] has been taken.")
-     false
+      @errors[:username] = Error.new("Username [#{username}] has been taken.")
+      false
     end
 
     def valid?

@@ -28,6 +28,7 @@ require 'console/commands/command/session/whoami'
 
 require 'console/commands/command/user'
 require 'console/commands/command/user/create_user'
+require 'console/commands/command/user/destroy_user'
 
 module Console
 end
