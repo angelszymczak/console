@@ -46,7 +46,10 @@ module Console
 
       def self.parse_options(input)
         if input.all? { |option| option_input?(option) }
-          input.map { |option| option.split(OPTION_JOINER, 2) }
+          input
+            .map { |option| option.split(OPTION_JOINER, 2) }
+            .to_h
+            .tap { input.clear }
         else
           raise MalFormed, "Malformed options: [#{input.join(' ')}]."
         end
@@ -101,12 +104,7 @@ module Console
       end
 
       def valid_options?
-        return true if options_condition
-
-        @errors[:options] = MalFormed.new(
-          "Expected #{self.class::OPTIONS} options. You've sent #{options}."
-        )
-        false
+        raise NotImplementedError, "#{self.class} has not implemented method '#{__method__}'"
       end
 
       def error_message
@@ -136,10 +134,6 @@ module Console
 
       def arguments_condition
         arguments.count == self.class::ARGS_COUNT
-      end
-
-      def options_condition
-        raise NotImplementedError, "#{self.class} has not implemented method '#{__method__}'"
       end
     end
   end
