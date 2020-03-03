@@ -31,31 +31,40 @@ module Console
     end
 
     def self.store_setup(persist_file)
-      store =
-        if persist_file.nil?
-          Store.build([initial_user], initial_directory)
-        elsif Store.exists?(persist_file)
-          Store.load(persist_file)
-        else
-          Store.build([initial_user], initial_directory, persist_file)
+      if persist_file.nil?
+        build_store
+      elsif Store.exists?(persist_file)
+        Store.load!.tap do |store|
+          Filesystem.store = store
+          Filesystem.pwd = store.filesystem
+          User.store = store
         end
-
-      Filesystem.store = store
-      User.store = store
+      else
+        build_store
+      end
     end
 
-    def self.initial_directory
-      Filesystem.initial_filesystem
+    def self.build_store
+      Store.new.tap do |store|
+        Filesystem.store = store
+        store.filesystem = Filesystem.initial_filesystem
+        Filesystem.pwd = store, store.filesystem
+
+        User.store = store
+        store.users << initial_user
+      end
     end
 
     def self.initial_user
       loop do
         username, password = ask_username_password('Please create first super user: ')
-        if (user = User.new(username, password, :super)).valid_profile?
-          puts "First user [#{user}] was created".success
-          return user
+        msg = output("create_user #{username} #{password} -role=super -first=1")
+
+        if msg.match?(/created/)
+          puts msg.success
+          return User.users.last
         else
-          puts user.error_message.error
+          puts msg.error
         end
       end
     end
@@ -63,14 +72,13 @@ module Console
     def self.initial_login
       loop do
         username, password = ask_username_password('Initial login: ')
-        unless (user = User.login(username, password)).nil?
-          puts "Initial #{user} logged".success
-          break
-        else
-          puts 'Invalid credentials'.error
-        end
 
-        break unless User.current_user.nil?
+        if (msg = output("login #{username} #{password}")).match?(/Logged/)
+          puts msg.success
+          return
+        else
+          puts msg.error
+        end
       end
     end
 
@@ -101,7 +109,7 @@ module Console
       e.message.error
     end
 
-    private_class_method :setup, :app_login, :store_setup, :initial_directory, :initial_user,
+    private_class_method :setup, :app_login, :store_setup, :build_store, :initial_user,
       :initial_login, :ask_username_password, :output
   end
 end
