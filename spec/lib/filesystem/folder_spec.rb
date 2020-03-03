@@ -30,14 +30,21 @@ describe Console::Folder do
     end
   end
 
-  context '#path' do
+  context 'with loaded tree filesystem' do
     let(:root_item) { described_class.new('root') }
-    let(:item_1) { described_class.new('level_1') }
-    let(:item_2) { described_class.new('level_2') }
-    let(:item_3) { described_class.new('level_3') }
+    let(:folder_A) { described_class.new('folder_level_1') }
+    let(:folder_B) { described_class.new('folder_level_2') }
+    let(:item_B) { described_class.new('item_level_2') }
+    let(:folder_C) { described_class.new('folder_level_3') }
 
-    subject(:path) { root_item.add(item_1).add(item_2).add(item_3).path }
+    before do
+      root_item.add(folder_A).add(folder_B).add(folder_C)
+      folder_B.add(item_B)
+    end
 
-    it { is_expected.to eq('root/level_1/level_2/level_3') }
+    describe '#path' do
+      it { expect(folder_C.path).to eq('root/folder_level_1/folder_level_2/folder_level_3') }
+      it { expect(item_B.path).to eq('root/folder_level_1/folder_level_2/item_level_2') }
+    end
   end
 end
