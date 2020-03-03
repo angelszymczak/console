@@ -39,6 +39,10 @@ module Console
       self.parent = parent
     end
 
+    def file?
+      false
+    end
+
     def valid?
       valid_name_format? && valid_name_size?
     end
