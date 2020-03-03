@@ -39,7 +39,7 @@ module Console
     # Build a new directory with root name '/'
     #
     # @returns [Folder < Filesystem]
-    def self.initial_filesystem(name)
+    def self.initial_filesystem(name = nil)
       Folder.new(name || DIRECTORY_SEPARATOR).tap do |folder|
         folder.root!
       end
