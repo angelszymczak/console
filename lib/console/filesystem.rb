@@ -4,8 +4,11 @@ module Console
     ALLOWED_CHARS_REGEX = /^[a-zA-Z0-9_.-]*$/
     MAX_NAME_SIZE = 255 # Bytes 2^8
 
+    extend Forwardable
+
     @@store = nil
     @@pwd = nil
+    @@root = nil
 
     def self.store
       @@store
@@ -23,16 +26,28 @@ module Console
       @@pwd = folder
     end
 
+    def self.root
+      @@root
+    end
+    def_delegator self, :root
+
+    def self.root=(folder)
+      @@root = folder
+    end
+    def_delegator self, :root=
+
     # Build a new directory with root name '/'
     #
     # @returns [Folder < Filesystem]
-    def self.initial_filesystem
-      Folder.new(DIRECTORY_SEPARATOR)
+    def self.initial_filesystem(name = nil)
+      Folder.new(name || DIRECTORY_SEPARATOR).tap do |folder|
+        folder.root!
+      end
     end
 
     attr_accessor :name, :parent
 
-    def initialize(name, parent = nil)
+    def initialize(name)
       super()
 
       self.name = name
@@ -41,6 +56,20 @@ module Console
 
     def file?
       false
+    end
+
+    def folder?
+      false
+    end
+
+    def path
+      return "#{name}" if root?
+
+      parent.path.concat(DIRECTORY_SEPARATOR).concat(name)
+    end
+
+    def root?
+      self == root
     end
 
     def valid?
