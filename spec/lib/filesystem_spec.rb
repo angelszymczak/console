@@ -24,13 +24,17 @@ describe Console::Filesystem do
       context 'by name format' do
         let(:name) { '!invalid#name$' }
 
-        it { is_expected.not_to be_valid_name_format }
+        before { is_expected.not_to be_valid_name_format }
+
+        it { expect(subject.error_message).to match(/Name.*.invalid format/) }
       end
 
       context 'by name size' do
         let(:name) { 'a' * 256 }
 
-        it { is_expected.not_to be_valid_name_size }
+        before { is_expected.not_to be_valid_name_size }
+
+        it { expect(subject.error_message).to match(/Name.*.exceed limit size/) }
       end
     end
   end
