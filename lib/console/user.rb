@@ -22,6 +22,10 @@ module Console
     end
     def_delegator self, :current_user=
 
+    def self.logged?(username)
+      current_user.username == username
+    end
+
     def self.login(username, password)
       return if (user = find_by(username)).nil?
 
@@ -34,7 +38,9 @@ module Console
       end
     end
 
-    def self.destroy(user)
+    def self.destroy(username)
+      return if (user = find_by(username)).nil?
+
       store.storing { users.delete(user) }
     end
 

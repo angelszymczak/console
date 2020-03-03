@@ -22,76 +22,50 @@ describe Console::User do
     end
 
     context 'invalid profile by' do
+      before { is_expected.not_to be_valid_profile }
+
       context 'username' do
-        let(:password) { 'password' }
+        subject(:user) { described_class.new(username, 'password', :super) }
 
         context 'too long' do
           let(:username) { 'large' * 100 }
 
-          subject(:user) { described_class.new(username, password, :super) }
-
-          it do
-            is_expected.not_to be_valid_profile
-            expect(user.error_message).to eq('Username size must be in [255..8] by [500].')
-          end
+          it { expect(user.error_message).to eq('Username size must be in [255..8] by [500].') }
         end
 
         context 'too short' do
           let(:username) { 'short' }
 
-          subject(:user) { described_class.new(username, password, :super) }
-
-          it do
-            is_expected.not_to be_valid_profile
-            expect(user.error_message).to eq('Username size must be in [255..8] by [5].')
-          end
+          it { expect(user.error_message).to eq('Username size must be in [255..8] by [5].') }
         end
 
         context 'whit whitespaces' do
           let(:username) { 'user name' }
 
-          subject(:user) { described_class.new(username, password, :super) }
-
-          it do
-            is_expected.not_to be_valid_profile
-            expect(user.error_message).to eq('Username can\'t have whitespaces.')
-          end
+          it { expect(user.error_message).to eq('Username can\'t have whitespaces.') }
         end
       end
 
       context 'password' do
-        let(:username) { 'username' }
+        subject(:user) { described_class.new('username', password, :super) }
 
         context 'to short' do
           let(:password) { 'pass' }
 
-          subject(:user) { described_class.new(username, password, :super) }
-
-          it do
-            is_expected.not_to be_valid_profile
-            expect(user.error_message).to eq('Password must have [8] characters.')
-          end
+          it { expect(user.error_message).to eq('Password must have [8] characters.') }
         end
 
         context 'whit whitespaces' do
           let(:password) { 'pass word' }
 
-          subject(:user) { described_class.new(username, password, :super) }
-
-          it do
-            is_expected.not_to be_valid_profile
-            expect(user.error_message).to eq('Password can\'t have whitespaces.')
-          end
+          it { expect(user.error_message).to eq('Password can\'t have whitespaces.') }
         end
       end
 
       context 'role' do
         subject(:user) { described_class.new('username', 'password', :none) }
 
-        it do
-          is_expected.not_to be_valid_profile
-          expect(user.error_message).to eq('Invalid [none] role.')
-        end
+        it { expect(user.error_message).to eq('Invalid [none] role.') }
       end
     end
   end
@@ -102,130 +76,146 @@ describe Console::User do
     context 'super' do
       let(:role) { :super }
 
-      it do
-        is_expected.to be_super
-        expect(subject.symbol).to eq('#')
-      end
+      it { is_expected.to be_super }
+      it { expect(subject.symbol).to eq('#') }
     end
 
     context 'regular' do
       let(:role) { :regular }
 
-      it do
-        is_expected.to be_regular
-        expect(subject.symbol).to eq('$')
-      end
+      it { is_expected.to be_regular }
+      it { expect(subject.symbol).to eq('$') }
     end
 
     context 'read only' do
       let(:role) { :read_only}
 
-      it do
-        is_expected.to be_read_only
-        expect(subject.symbol).to eq('>')
-      end
-    end
-  end
-
-  describe '.login' do
-    let(:store) do
-      instance_double(
-        Console::Store,
-        users: [
-          described_class.new('username_1', 'password_1', :super),
-          described_class.new('username_2', 'password_2', :regular)
-        ]
-      )
-    end
-
-    before { described_class.store = store }
-
-    subject(:user) { described_class.login(username, password) }
-
-    context 'with valid credentials' do
-      let(:username) { 'username_1' }
-      let(:password) { 'password_1' }
-
-      it do
-        expect do
-          is_expected.to eq(described_class.current_user)
-        end.to change{ described_class.current_user }
-      end
-    end
-
-    context 'with invalid credentials' do
-      let(:username) { 'nobody_username' }
-      let(:password) { 'password_1' }
-
-      it do
-        expect do
-          is_expected.to be_nil
-        end.to_not change{ described_class.current_user }
-      end
+      it { is_expected.to be_read_only }
+      it { expect(subject.symbol).to eq('>') }
     end
   end
 
   describe '.create' do
-    include_context 'Loaded store'
+    include_context 'loaded store'
 
-    let(:new_username) { 'new_user' }
-    let(:new_password) { 'password' }
-    let(:new_role) { :regular }
+    subject(:new_user) { described_class.create(username, common_password, :regular) }
 
-    subject(:new_user) { described_class.create(new_username, new_password, new_role) }
+    context 'when new user' do
+      let(:username) { 'new_user' }
 
-    it do
-      expect(Console::User.find_by(new_username)).to be_nil
-      expect do
-        expect(new_user.username).to eq(new_username)
-        expect(Console::User.find_by(new_username)).not_to be_nil
-      end.to change { Console::User.users.count }.by(1)
+      it do
+        expect do
+          is_expected.to be_valid
+        end.to change { described_class.users.count }.by(1)
+      end
     end
 
-    describe '.find_by' do
-      include_context 'Loaded store'
+    context 'when taken user' do
+      let(:username) { described_class.users.sample.username }
 
+      it do
+        expect do
+          is_expected.not_to be_valid
+        end.not_to change { described_class.users.count }
+      end
+    end
+  end
+
+  describe '.destroy' do
+    include_context 'loaded store'
+
+    subject(:target_user) { described_class.destroy(username) }
+
+    context 'when user exists' do
       let(:user) { described_class.users.sample }
+      let(:username) { user.username }
 
-      subject(:target) { described_class.find_by(user.username) }
-
-      it { is_expected.to be(user) }
-    end
-
-    describe '.login' do
-      include_context 'Loaded store'
-
-      before { described_class.users << target_user }
-
-      let(:target_user) { described_class.new('target_user', target_password, :regular) }
-      let(:target_password) { 'password' }
-
-      subject(:logged_user) { described_class.login(target_user.username, target_password) }
+      before { expect(described_class.find_by(username)).to be(user) }
+      after { expect(described_class.find_by(username)).to be_nil }
 
       it do
-        expect(Console::User.current_user).not_to be(target_user)
         expect do
-          is_expected.to eq(target_user)
-        end.to change { Console::User.current_user }
+          is_expected.to eq(user)
+        end.to change { described_class.users.count }.by(-1)
       end
     end
 
-    describe '.destroy' do
-      include_context 'Loaded store'
-
-      before { described_class.users << target_user }
-
-      let(:target_user) { described_class.new('target_user', 'password', :regular) }
-
-      subject { described_class.destroy(target_user) }
+    context 'when user not exists' do
+      let(:username) { 'unknown' }
 
       it do
-        expect(Console::User.find_by(target_user.username)).not_to be_nil
         expect do
-          is_expected.to eq(target_user)
-          expect(Console::User.find_by(target_user.username)).to be_nil
-        end.to change { Console::User.users.count }.by(-1)
+          is_expected.to be_nil
+        end.not_to change { described_class.users.count }
       end
+    end
+  end
+
+  describe '.find_by' do
+    include_context 'loaded store'
+
+    subject(:target) { described_class.find_by(username) }
+
+    context 'when user exists' do
+      let(:username) { described_class.users.sample.username }
+
+      it { is_expected.to have_attributes(username: username) }
+    end
+
+    context 'when user not exists' do
+      let(:username) { 'unknown' }
+
+      it { is_expected.to be_nil }
+    end
+  end
+
+  describe '.login' do
+    include_context 'loaded store'
+
+    subject(:logged_user) { described_class.login(username, common_password) }
+
+    context 'when user exists' do
+      let(:username) do
+        described_class
+          .users
+          .reject { |u| u == described_class.current_user }
+          .sample
+          .username
+      end
+
+      it do
+        expect do
+          is_expected.to eq(described_class.current_user)
+        end.to change { described_class.current_user }
+      end
+    end
+
+    context 'when user not exists' do
+      let(:username) { 'unknown' }
+
+      it do
+        expect do
+          is_expected.to be_nil
+        end.not_to change { described_class.current_user }
+      end
+    end
+  end
+
+  describe '.logged?' do
+    include_context 'loaded store'
+
+    subject(:user) { described_class.logged?(username) }
+
+    context 'when is current user' do
+      let(:username) { described_class.current_user.username }
+
+      it { is_expected.to be_truthy }
+    end
+
+    context 'when is not current user' do
+      let(:username) { 'another' }
+
+      it { is_expected.to be_falsey }
     end
   end
 end

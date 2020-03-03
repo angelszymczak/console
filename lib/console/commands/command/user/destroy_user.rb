@@ -5,13 +5,13 @@ module Console
       OPTIONS_COUNT= 0
 
       def perform
-        if (user = Console::User.find_by(arguments.join)).nil?
-          "Can\'t destroy [#{arguments.join}]."
-        elsif (Console::User.current_user == user)
+        if Console::User.logged?(username = arguments.join)
            "Can\'t destroy current logged user."
+        elsif (Console::User.find_by(username)).nil?
+          "Can\'t destroy [#{username}]."
         else
-          Console::User.destroy(user)
-          "User [#{user.username}] was destroyed."
+          Console::User.destroy(username)
+          "User [#{username}] was destroyed."
         end
       end
 
