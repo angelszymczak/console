@@ -17,6 +17,7 @@ require 'console/user'
 
 require 'console/filesystem'
 require 'console/filesystem/folder'
+require 'console/filesystem/file'
 require 'console/filesystem/file/metadata'
 
 require 'console/commands'

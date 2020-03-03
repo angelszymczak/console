@@ -16,6 +16,7 @@ describe Console::Filesystem do
       let(:name) { 'valid_name-1' }
 
       it { is_expected.to be_valid }
+      it { is_expected.not_to be_file }
     end
 
     context 'invalid' do
