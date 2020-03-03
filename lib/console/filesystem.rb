@@ -43,6 +43,10 @@ module Console
       false
     end
 
+    def folder?
+      false
+    end
+
     def valid?
       valid_name_format? && valid_name_size?
     end

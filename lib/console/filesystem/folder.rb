@@ -3,5 +3,9 @@ module Console
     def root?
       !parent
     end
+
+    def folder?
+      true
+    end
   end
 end
