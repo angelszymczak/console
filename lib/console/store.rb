@@ -46,7 +46,9 @@ module Console
 
     # Exec a task and then persis if persistible
     def storing
-      yield.tap { persist! if persistible? }
+      if block_given?
+        yield
+      end.tap { persist! if persistible? }
     end
 
     def persistible?
