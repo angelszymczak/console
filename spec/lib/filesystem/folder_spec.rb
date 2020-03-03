@@ -36,9 +36,15 @@ describe Console::Folder do
     let(:folder_level_2) { described_class.new('folder_level_2') }
     let(:item_B) { described_class.new('item_level_2') }
     let(:folder_level_3) { described_class.new('folder_level_3') }
+    let(:folder_level_4) { described_class.new('folder_level_4') }
 
     before do
-      root_item.add(folder_level_1).add(folder_level_2).add(folder_level_3)
+      root_item
+        .add(folder_level_1)
+        .add(folder_level_2)
+        .add(folder_level_3)
+        .add(folder_level_4)
+
       folder_level_2.add(item_B)
     end
 
@@ -62,6 +68,22 @@ describe Console::Folder do
         let(:directory) { folder_level_3 }
 
         it { is_expected.to be(folder_level_2) }
+      end
+    end
+
+    describe '#seek' do
+      subject(:folder_target) { described_class.seek(folder_level_1, array_path) }
+
+      context 'when path directory exists' do
+        let(:array_path) { %w[folder_level_2 folder_level_3 folder_level_4] }
+
+        it { is_expected.to eq(folder_level_4) }
+      end
+
+      context 'when path directory no exists' do
+        let(:array_path) { %w[folder_level_2 folder_level_3 folder_level_4 unknow_folder] }
+
+        it { is_expected.to be_nil }
       end
     end
   end

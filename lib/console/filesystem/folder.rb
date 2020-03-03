@@ -2,6 +2,20 @@ module Console
   class Folder < Filesystem
     PARENT_PATH = '..'
 
+    # directory [Folder]
+    # path [Array<String>]:
+    #   i.e: ['path', 'to', 'my', 'target']
+    #
+    # Search folder inside of `directory`
+    #
+    # returns [Folder|nil]
+    def self.seek(directory, path)
+      loop do
+        return if (directory = browse(directory, path.shift)).nil?
+        return directory if path.empty?
+      end
+    end
+
     # sought_path [String]: folder's name
     # directory [Folder]
     #
