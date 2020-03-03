@@ -10,4 +10,5 @@ group :development, :test do
   gem 'rubocop-gitlab-security'
   gem 'rspec', '~> 3.4'
   gem 'yard'
+  gem 'activesupport'
 end

@@ -15,6 +15,7 @@ require 'console/user'
 
 require 'console/filesystem'
 require 'console/filesystem/folder'
+require 'console/filesystem/file/metadata'
 
 require 'console/commands'
 require 'console/commands/mal_formed'
