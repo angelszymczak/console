@@ -4,31 +4,19 @@ module Console
 
     extend Forwardable
 
-    # Build new ´Store´ instance, if ´persist_file´ is present, then will be persisted.
-    #
-    # users [Array<User>]
-    # filesystem [Filesystem::Folder]
-    # persist_file [String]: file name to data persist
-    #
-    # returns [Store]
-    def self.build(users, filesystem, persist_file = nil)
-      new(users, filesystem).tap do |str|
-        unless persist_file.nil?
-          str.path = PREFIX_PATH + persist_file
-          str.persist!
-        end
-      end
-    end
+    @@path = nil
 
+    # When check existence set the persist file path
     def self.exists?(persist_file)
-      ::File.exists?(PREFIX_PATH + persist_file)
+      self.path = persist_file
+      ::File.exists?(self.path)
     end
 
     # Load serialized store object file
     #
     # returns [Store]
-    def self.load(persist_file)
-      Marshal.load(::File.read(PREFIX_PATH + persist_file))
+    def self.load!
+      Marshal.load(::File.read(path))
     rescue ArgumentError
       puts 'Incompatible data type (can\'t be load).'
       exit
@@ -37,9 +25,19 @@ module Console
       exit
     end
 
-    attr_accessor :users, :filesystem, :path
+    def self.path
+      @@path
+    end
+    def_delegator self, :path
 
-    def initialize(users, filesystem)
+    def self.path=(persist_file)
+      @@path = "#{PREFIX_PATH}#{persist_file}"
+    end
+    def_delegator self, :path=
+
+    attr_accessor :users, :filesystem
+
+    def initialize(users = [], filesystem = nil)
       self.users = users
       self.filesystem = filesystem
     end
@@ -52,14 +50,14 @@ module Console
     end
 
     def persistible?
-      !!path
+      !!self.path
     end
 
     # Serialize store amd write file
     #
     # returns [Serialized<Store>]
     def persist!
-      ::File.write(path, Marshal.dump(self))
+      ::File.write(self.path, Marshal.dump(self))
     rescue => e
       puts e.message
       exit

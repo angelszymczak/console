@@ -21,6 +21,7 @@ module Console
 
       def valid_options_count?
         return true if options.keys.count == OPTIONS_COUNT
+        return true if first_user?
 
         @errors[:options] = MalFormed.new(
           "Expected [#{OPTIONS_COUNT}] options. You've sent #{options.count}: #{options}."
