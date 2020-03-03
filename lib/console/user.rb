@@ -1,5 +1,8 @@
 module Console
   class User
+    ROLES = { super: '#', regular: '$',  read_only: '>' }
+    FIRST_USER_FLAG = '1'
+
     extend Forwardable
 
     @@store = nil
@@ -21,6 +24,10 @@ module Console
       @@current_user = user
     end
     def_delegator self, :current_user=
+
+    def self.first_user?(flag)
+      FIRST_USER_FLAG == flag && store.nil? || store.users.empty?
+    end
 
     def self.logged?(username)
       current_user.username == username
@@ -65,8 +72,6 @@ module Console
     MIN_NAME_SIZE = 8
     PASSWORD_SIZE = 8
     WHITESPACE = /\s/
-
-    ROLES = { super: '#', regular: '$',  read_only: '>' }
 
     attr_accessor :username, :password, :role
     attr_reader :errors
