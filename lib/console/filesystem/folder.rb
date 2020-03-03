@@ -3,14 +3,14 @@ module Console
 
     attr_accessor :items
 
-    def initialize(name, items = [], parent = nil)
-      super(name, parent)
+    def initialize(name, items = [])
+      super(name)
 
       self.items = items
     end
 
-    def root?
-      !parent
+    def root!
+      self.root = self
     end
 
     def folder?

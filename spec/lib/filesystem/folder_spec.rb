@@ -31,7 +31,7 @@ describe Console::Folder do
   end
 
   context 'with loaded tree filesystem' do
-    let(:root_item) { described_class.new('root') }
+    let(:root_item) { described_class.initial_filesystem('root') }
     let(:folder_A) { described_class.new('folder_level_1') }
     let(:folder_B) { described_class.new('folder_level_2') }
     let(:item_B) { described_class.new('item_level_2') }
