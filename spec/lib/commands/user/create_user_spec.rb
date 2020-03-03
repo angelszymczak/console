@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Console::Commands::CreateUser do
-  include_context 'Loaded store'
+  include_context 'loaded store'
 
   it 'registered'  do
     expect(Console::Commands::Command.send(:commands)).to include(create_user: described_class)
@@ -10,85 +10,45 @@ describe Console::Commands::CreateUser do
   describe '.build!' do
     subject(:command) { Console::Commands::Command.build!(input) }
 
-    context 'valid input' do
-      let(:input) { 'create_user new_username new_password -role=regular' }
+    include_examples 'valid', 'create_user new_username new_password -role=regular'
 
-      include_examples 'Valid commands'
+    include_examples 'invalid by wrong arguments', 'create_user'
+    include_examples 'invalid by wrong arguments', 'create_user username password extra_argument'
+    include_examples 'invalid by wrong options', 'create_user username password -invalid=option'
+    include_examples 'invalid by wrong options', 'create_user username password -role=regular -extra=option'
 
-      context '#exec' do
-        context 'super user allow to create new user' do
-          before { Console::User.current_user = super_user }
+    include_examples 'allow', 'create_user', %i[super]
 
-          it { is_expected.to be_allow }
-        end
+    include_examples 'not allow', 'create_user', %i[regular read_only]
 
-        it 'if not super user not allow to create new user' do
-          [regular_user, read_only_user].each do |user|
-            Console::User.current_user = regular_user
+    context '#perform' do
+      let(:input) { "create_user #{username} password -role=read_only" }
 
-            is_expected.not_to be_allow
-            expect(subject.error_message).to match(/permissions: There aren't enough permissions/)
-          end
-        end
+      subject(:perform) { command.perform }
 
-        context '#perform' do
-          let(:input) { "create_user #{username} password -role=read_only" }
+      context 'with new username' do
+        let(:username) { 'new_user'}
 
-          subject(:perform) { command.perform }
+        before { expect(Console::User.find_by(username)).to be_nil }
+        after { expect(Console::User.find_by(username)).not_to be_nil }
 
-          context 'with new username' do
-            let(:username) { 'this_is_a_new_user'}
-
-            it do
-              expect(Console::User.find_by(username)).to be_nil
-
-              expect do
-                is_expected.to match(/User \[#{username}:read_only\] was created./)
-                expect(Console::User.find_by(username)).not_to be_nil
-              end.to change { Console::User.users.count }.by(1)
-            end
-          end
-
-          context 'with taken username' do
-            let(:username) { super_user.username }
-
-            it do
-              expect(Console::User.find_by(username)).not_to be_nil
-
-              expect do
-                is_expected.to match(/Username \[#{username}\] has been taken./)
-              end.not_to change { Console::User.users.count }
-            end
-          end
+        it do
+          expect do
+            is_expected.to match(/User \[#{username}:read_only\] was created./)
+          end.to change { Console::User.users.count }.by(1)
         end
       end
-    end
 
-    context 'invalid command' do
-      before { is_expected.not_to be_valid }
+      context 'with taken username' do
+        let(:username) { super_user.username }
 
-      context 'missing arguments' do
-        let(:input) { 'create_user' }
+        before { expect(Console::User.find_by(username)).to be(super_user) }
 
-        it { expect(subject.error_message).to match(/arguments/) }
-      end
-
-      context 'by extra arguments' do
-        let(:input) { 'create_user username password extra arg' }
-
-        it { expect(subject.error_message).to match(/arguments.*.extra.*.arg.*./) }
-      end
-
-      context 'by extra options' do
-        let(:input) { 'create_user username password -extra_option_1=typo_1 -option=typo' }
-
-        it { expect(subject.error_message).to match(/options.*.typo.*./) }
-      end
-
-      context 'bad options' do
-        let(:input) { 'create_user username password -option=typo' }
-
-        it { expect(subject.error_message).to match(/options: Expected -role flag/) }
+        it do
+          expect do
+            is_expected.to match(/Username \[#{username}\] has been taken./)
+          end.not_to change { Console::User.users.count }
+        end
       end
     end
   end

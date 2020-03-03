@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Console::Commands::Logout do
-  include_context 'Loaded store'
+  include_context 'loaded store'
 
   it 'registered'  do
     expect(Console::Commands::Command.send(:commands)).to include(logout: described_class)
@@ -10,46 +10,23 @@ describe Console::Commands::Logout do
   describe '.build!' do
     subject(:command) { Console::Commands::Command.build!(input) }
 
-    context 'valid input' do
+    include_examples 'valid', 'logout'
+
+    include_examples 'invalid by wrong arguments', 'logout extra_argument'
+    include_examples 'invalid by wrong options', 'logout -extra=option'
+
+    include_examples 'allow', 'logout', %i[super regular read_only]
+
+    context '#perform' do
       let(:input) { 'logout' }
 
-      include_examples 'Valid commands'
+      before { allow(subject).to receive(:exit_session) }
 
-      context '#exec' do
-        it 'allow for all roles' do
-          [super_user, regular_user, read_only_user].each do |user|
-            Console::User.current_user = user
+      it do
+        expect(STDOUT).to receive(:puts).with(/Ok, ok, I'm out. Bye/)
+        expect(subject).to receive(:exit_session)
 
-            is_expected.to be_allow
-          end
-        end
-
-        context '#perform' do
-          before { allow(subject).to receive(:exit_session) }
-
-          it '#perform' do
-            expect(STDOUT).to receive(:puts).with(/Ok, ok, I'm out. Bye/)
-            expect(subject).to receive(:exit_session)
-
-            subject.perform
-          end
-        end
-      end
-    end
-
-    context 'invalid command' do
-      before { is_expected.not_to be_valid }
-
-      context 'by extra arguments' do
-        let(:input) { 'logout extra_arg' }
-
-        it { expect(subject.error_message).to match(/arguments.*.extra.*.arg.*./) }
-      end
-
-      context 'by extra options' do
-        let(:input) { 'logout -option=typo' }
-
-        it { expect(subject.error_message).to match(/options.*.typo.*./) }
+        subject.perform
       end
     end
   end

@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Console::Commands::Login do
-  include_context 'Loaded store'
+  include_context 'loaded store'
 
   it 'registered'  do
     expect(Console::Commands::Command.send(:commands)).to include(login: described_class)
@@ -10,74 +10,45 @@ describe Console::Commands::Login do
   describe '.build!' do
     subject(:command) { Console::Commands::Command.build!(input) }
 
-    context 'valid input' do
-      let(:input) { 'login any_username any_password' }
+    include_examples 'valid', 'login username password'
 
-      include_examples 'Valid commands'
+    include_examples 'invalid by wrong arguments', 'login missing_argument'
+    include_examples 'invalid by wrong arguments', 'login username password extra_argument'
+    include_examples 'invalid by wrong options', 'login username password -extra=option'
 
-      context '#exec' do
-        context 'allow for all roles' do
-          it 'allow for all roles' do
-            [super_user, regular_user, read_only_user].each do |user|
-              Console::User.current_user = user
-              is_expected.to be_allow
-            end
-          end
+    include_examples 'allow', 'login', %i[super regular read_only]
 
-          context '#perform' do
-            let(:input) { "login #{username} #{password}" }
+    context '#perform' do
+      let(:input) { "login #{username} #{common_password}" }
 
-            context 'with know user' do
-              let(:username) { regular_user.username }
-              let(:password) { regular_user_password }
+      subject(:perform) { command.perform }
 
-              subject(:perform) { command.perform }
+      context 'with know user' do
+        let(:username) do
+          Console::User
+            .users
+            .reject { |u| u == Console::User.current_user }
+            .sample
+            .username
+        end
 
-              it '#perform' do
-                expect do
-                  is_expected.to match(/Logged.*.#{username}/)
+        after { expect(Console::User.current_user.username).to eq(username) }
 
-                  expect(Console::User.current_user).to eq(regular_user)
-                end.to change { Console::User.current_user }
-              end
-            end
-
-            context 'with unknow user' do
-              let(:username) { 'unknow_user' }
-              let(:password) { 'some_pass' }
-
-              subject(:perform) { command.perform }
-
-              it '#perform' do
-                expect do
-                  is_expected.to match(/Invalid Credentials./)
-                end.not_to change { Console::User.current_user }
-              end
-            end
-          end
+        it do
+          expect do
+            is_expected.to match(/Logged.*.#{username}/)
+          end.to change { Console::User.current_user }
         end
       end
-    end
 
-    context 'invalid command' do
-      before { is_expected.not_to be_valid }
+      context 'with unknow user' do
+        let(:username) { 'unknow_user' }
 
-      context 'missing arguments' do
-        let(:input) { 'login' }
-
-        it { expect(subject.error_message).to match(/arguments/) }
-      end
-
-      context 'by extra arguments' do
-        let(:input) { 'login username password extra arg' }
-
-        it { expect(subject.error_message).to match(/arguments.*.extra.*.arg.*./) }
-      end
-
-      context 'by extra options' do
-        let(:input) { 'login username password -option=typo' }
-
-        it { expect(subject.error_message).to match(/options.*.typo.*./) }
+        it do
+          expect do
+            is_expected.to match(/Invalid Credentials./)
+          end.not_to change { Console::User.current_user }
+        end
       end
     end
   end

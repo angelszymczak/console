@@ -1,12 +1,9 @@
-RSpec.shared_context 'Loaded store' do
-  let(:super_user) { Console::User.new('username_1', super_user_password, :super) }
-  let(:super_user_password) { 'password_1' }
+RSpec.shared_context 'loaded store' do
+  let(:super_user) { Console::User.new('username_1', common_password, :super) }
+  let(:regular_user) { Console::User.new('username_2', common_password, :regular) }
+  let(:read_only_user) { Console::User.new('username_3', common_password, :read_only) }
 
-  let(:regular_user) { Console::User.new('username_2', regular_user_password, :regular) }
-  let(:regular_user_password) { 'password_2' }
-
-  let(:read_only_user) { Console::User.new('username_3', read_only_user_password, :read_only) }
-  let(:read_only_user_password) { 'password_3' }
+  let(:common_password) { 'password' }
 
   let(:filesystem) { instance_double(Console::Folder, name: '/') }
 
