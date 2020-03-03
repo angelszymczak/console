@@ -38,6 +38,11 @@ module Console
       end
     end
 
+    def self.update_password(new_password)
+      current_user.password = new_password
+      current_user.tap { |user| store.storing if current_user.valid? }
+    end
+
     def self.destroy(username)
       return if (user = find_by(username)).nil?
 

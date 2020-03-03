@@ -121,6 +121,32 @@ describe Console::User do
     end
   end
 
+  describe '.update_password' do
+    include_context 'loaded store'
+
+    subject(:updated_user) { described_class.update_password(password) }
+
+    context 'when valid upated password' do
+      let(:password) { 'updated_password' }
+
+      it do
+        expect do
+          is_expected.to be_valid
+        end.to change { described_class.current_user.password }
+      end
+    end
+
+    context 'when invalid upated password' do
+      let(:password) { 'invalid' }
+
+      it do
+        expect do
+          is_expected.not_to be_valid
+        end.not_to change { described_class.current_user.password }
+      end
+    end
+  end
+
   describe '.destroy' do
     include_context 'loaded store'
 
