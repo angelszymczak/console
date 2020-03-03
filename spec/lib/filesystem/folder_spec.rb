@@ -29,4 +29,15 @@ describe Console::Folder do
       it { is_expected.to be(item) }
     end
   end
+
+  context '#path' do
+    let(:root_item) { described_class.new('root') }
+    let(:item_1) { described_class.new('level_1') }
+    let(:item_2) { described_class.new('level_2') }
+    let(:item_3) { described_class.new('level_3') }
+
+    subject(:path) { root_item.add(item_1).add(item_2).add(item_3).path }
+
+    it { is_expected.to eq('root/level_1/level_2/level_3') }
+  end
 end

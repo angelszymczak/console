@@ -47,6 +47,16 @@ module Console
       false
     end
 
+    def path
+      return name if root?
+
+      parent.path.concat(DIRECTORY_SEPARATOR).concat(name)
+    end
+
+    def root?
+      parent.nil?
+    end
+
     def valid?
       valid_name_format? && valid_name_size?
     end
