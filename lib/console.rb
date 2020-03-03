@@ -11,6 +11,8 @@ require 'console/prompt'
 require 'forwardable'
 require 'console/store'
 
+require 'console/base'
+
 require 'console/user'
 
 require 'console/filesystem'

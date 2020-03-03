@@ -1,5 +1,5 @@
 module Console
-  class User
+  class User < Base
     ROLES = { super: '#', regular: '$',  read_only: '>' }
     FIRST_USER_FLAG = '1'
 
@@ -66,18 +66,15 @@ module Console
     end
     def_delegator self, :users
 
-    include Comparable
-
     MAX_NAME_SIZE = 255
     MIN_NAME_SIZE = 8
     PASSWORD_SIZE = 8
     WHITESPACE = /\s/
 
     attr_accessor :username, :password, :role
-    attr_reader :errors
 
     def initialize(username, password, role)
-      @errors = {}
+      super()
 
       self.username = username
       self.password = password
@@ -152,10 +149,6 @@ module Console
       false
     end
 
-    def error_message
-      @errors.map { |error, msg| msg }.join(' ')
-    end
-
     def to_s
       "#{role} -> #{username}"
     end
@@ -182,7 +175,5 @@ module Console
     def symbol
       ROLES[role]
     end
-
-    class Error < StandardError; end
   end
 end
