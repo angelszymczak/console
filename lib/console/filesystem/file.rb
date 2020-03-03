@@ -4,7 +4,7 @@ module Console
 
     attr_accessor :content, :metadata
 
-    def initialize(name, content, metadata)
+    def initialize(name, content = nil, metadata = nil)
       super(name)
 
       self.content = content
