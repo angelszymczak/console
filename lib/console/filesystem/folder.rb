@@ -105,6 +105,7 @@ module Console
     end
 
     def remove(item)
+      item.parent = nil
       items.delete(item)
     end
   end

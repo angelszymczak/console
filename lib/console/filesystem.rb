@@ -44,6 +44,12 @@ module Console
       DIRECTORY_SEPARATOR
     end
 
+    def self.destroy(directory, name)
+      return if (item = directory.find_item_by(name)).nil?
+
+      directory.remove(item)
+    end
+
     # Build a new directory with root name '/'
     #
     # @returns [Folder < Filesystem]
