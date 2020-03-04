@@ -29,9 +29,7 @@ module Console
       def valid_exceptional_arguments?
         return true unless Console::Filesystem.root_path?(arguments.join)
 
-        @errors[:arguments] = MalFormed.new(
-          "Cannot create directory [#{Console::Filesystem.root_path}]."
-        )
+        @errors[:arguments] = MalFormed.new("Cannot create directory [#{arguments.join}].")
         false
       end
 

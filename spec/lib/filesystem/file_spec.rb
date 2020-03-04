@@ -2,10 +2,9 @@ require 'spec_helper'
 
 describe Console::File do
   describe '.new' do
-    let(:metadata) { described_class::Metadata.new(author, Time.now.to_i) }
-    let(:author) { Console::User.new('username', 'password', :regular) }
+    include_context 'loaded tree'
 
-    subject(:file) { described_class.new('name', content, metadata) }
+    subject(:file) { described_class.new('name', content) }
 
     context 'valid' do
       let(:content) { 'I\'m a valid content' }

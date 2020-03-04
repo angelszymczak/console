@@ -6,7 +6,7 @@ module Console
       ROLE_FLAG = '-role'
 
       def perform
-        if (new_user = Console::User.create(*arguments, options['-role'])).valid?
+        if (new_user = Console::User.create(*arguments, options[ROLE_FLAG])).valid?
           "User [#{new_user.username}:#{new_user.role}] was created."
         else
           new_user.error_message

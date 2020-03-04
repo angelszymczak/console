@@ -36,8 +36,12 @@ require 'console/commands/command/user/destroy_user'
 require 'console/commands/command/user/update_password_user'
 
 require 'console/commands/command/filesystem'
+
 require 'console/commands/command/filesystem/folder'
 require 'console/commands/command/filesystem/folder/create_folder'
+
+require 'console/commands/command/filesystem/file'
+require 'console/commands/command/filesystem/file/create_file'
 
 module Console
 end

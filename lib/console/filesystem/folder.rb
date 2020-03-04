@@ -2,6 +2,12 @@ module Console
   class Folder < Filesystem
     PARENT_PATH = '..'
 
+    def self.create(directory, name)
+      new(name).tap do |folder|
+        store.storing { directory.add(folder) } if folder.valid?
+      end
+    end
+
     # path [String]:
     #   - absolute path: '/absolute/path/to/target' starting with '/'
     #   - relative path: 'relative/path/to/target' starting with item's name.

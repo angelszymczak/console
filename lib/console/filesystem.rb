@@ -53,12 +53,6 @@ module Console
       end
     end
 
-    def self.create(directory, name)
-      new(name).tap do |folder|
-        store.storing { directory.add(folder) } if folder.valid?
-      end
-    end
-
     attr_accessor :name, :parent
 
     def initialize(name)
