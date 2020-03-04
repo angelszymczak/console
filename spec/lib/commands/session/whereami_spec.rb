@@ -17,6 +17,8 @@ describe Console::Commands::Whereami do
     include_examples 'allow', 'whereami', %i[super regular read_only]
 
     context '#perform' do
+      include_context 'loaded tree'
+
       let(:input) { 'whereami' }
 
       subject(:perform) { command.perform }
@@ -24,8 +26,6 @@ describe Console::Commands::Whereami do
       it { is_expected.to eq(Console::Filesystem.pwd.path) }
 
       context 'changing the path' do
-        include_context 'loaded tree'
-
         before { Console::Filesystem.pwd = folder_level_4 }
 
         it { is_expected.to eq(Console::Filesystem.pwd.path) }
