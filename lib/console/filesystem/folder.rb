@@ -15,6 +15,7 @@ module Console
     end
 
     def self.ls(directory, name)
+      return pwd.items.map(&:name) if name.nil?
       return if (folder = directory.find_folder_by(name)).nil?
 
       folder.items.map(&:name)
