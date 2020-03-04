@@ -36,12 +36,26 @@ module Console
     end
     def_delegator self, :root=
 
+    def self.root_path?(path)
+      path == root_path
+    end
+
+    def self.root_path
+      DIRECTORY_SEPARATOR
+    end
+
     # Build a new directory with root name '/'
     #
     # @returns [Folder < Filesystem]
     def self.initial_filesystem(name = nil)
       Folder.new(name || DIRECTORY_SEPARATOR).tap do |folder|
         folder.root!
+      end
+    end
+
+    def self.create(directory, name)
+      new(name).tap do |folder|
+        store.storing { directory.add(folder) } if folder.valid?
       end
     end
 
@@ -63,7 +77,7 @@ module Console
     end
 
     def path
-      return "#{name}" if root?
+      return '' if root?
 
       parent.path.concat(DIRECTORY_SEPARATOR).concat(name)
     end
@@ -80,7 +94,7 @@ module Console
       return true if ALLOWED_CHARS_REGEX.match?(name)
 
       @errors[:name] = Error.new(
-        "Name [#{name}] invalid format. Only can use chars within [#{ALLOWED_CHARS_REGEX}]."
+        "Invalid format name [#{name}]. Only can use chars within [#{ALLOWED_CHARS_REGEX}]."
       )
       false
     end

@@ -28,3 +28,33 @@ RSpec.shared_examples 'invalid by options' do |string_input|
     it { expect(subject.error_message).to match(/options/) }
   end
 end
+
+RSpec.shared_examples 'invalid by exceptional arguments' do |string_input|
+  context "for input [#{string_input}]" do
+    before { is_expected.not_to be_valid }
+
+    let(:input) { string_input }
+
+    it { expect(subject.error_message).to match(/Cannot create directory/) }
+  end
+end
+
+RSpec.shared_examples 'invalid by invalid namespace' do |string_input|
+  context "for input [#{string_input}]" do
+    before { is_expected.not_to be_valid }
+
+    let(:input) { string_input }
+
+    it { expect(subject.error_message).to match(/Namespace has been taken:/) }
+  end
+end
+
+RSpec.shared_examples 'invalid by invalid path' do |string_input|
+  context "for input [#{string_input}]" do
+    before { is_expected.not_to be_valid }
+
+    let(:input) { string_input }
+
+    it { expect(subject.error_message).to match(/No such file or directory/) }
+  end
+end

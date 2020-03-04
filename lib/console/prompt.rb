@@ -36,8 +36,9 @@ module Console
       elsif Store.exists?(persist_file)
         Store.load!.tap do |store|
           Filesystem.store = store
-          Filesystem.pwd = store.filesystem
           User.store = store
+
+          Filesystem.pwd = store.filesystem.root!
         end
       else
         build_store
@@ -47,11 +48,14 @@ module Console
     def self.build_store
       Store.new.tap do |store|
         Filesystem.store = store
-        store.filesystem = Filesystem.initial_filesystem
-        Filesystem.pwd = store, store.filesystem
-
         User.store = store
-        store.users << initial_user
+
+        store.filesystem = Filesystem.initial_filesystem.root!
+        user = initial_user
+        store.users << user
+
+        Filesystem.pwd = store.filesystem
+        User.current_user = user
       end
     end
 

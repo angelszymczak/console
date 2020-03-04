@@ -2,6 +2,24 @@ module Console
   class Folder < Filesystem
     PARENT_PATH = '..'
 
+    # path [String]:
+    #   - absolute path: '/absolute/path/to/target' starting with '/'
+    #   - relative path: 'relative/path/to/target' starting with item's name.
+    def self.directory_target_path(path)
+      directory, relative_path =
+        if absolute_path?(path)
+          [root, path[1..].split(DIRECTORY_SEPARATOR)]
+        else
+          [pwd, path.split(DIRECTORY_SEPARATOR)]
+        end
+
+      [directory, relative_path.pop, relative_path]
+    end
+
+    def self.absolute_path?(path)
+      path.start_with?(DIRECTORY_SEPARATOR)
+    end
+
     # directory [Folder]
     # path [Array<String>]:
     #   i.e: ['path', 'to', 'my', 'target']
@@ -42,6 +60,10 @@ module Console
 
     def root!
       self.root = self
+    end
+
+    def find_item_by(filename)
+      items.find { |item| item.name == filename }
     end
 
     def find_folder_by(filename)
