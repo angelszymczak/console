@@ -13,3 +13,6 @@ Usage: bin/console [--option value]
 
 ## 01 - Setup App
 ![Alt Text](../docs/01-app_setup.gif)
+
+## 02 - App Login: with persisted mode
+![Alt Text](../docs/02-app_loggin_persisted.gif)
