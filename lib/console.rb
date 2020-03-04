@@ -40,6 +40,7 @@ require 'console/commands/command/filesystem'
 require 'console/commands/command/filesystem/folder'
 require 'console/commands/command/filesystem/folder/create_folder'
 require 'console/commands/command/filesystem/folder/cd'
+require 'console/commands/command/filesystem/folder/ls'
 
 require 'console/commands/command/filesystem/file'
 require 'console/commands/command/filesystem/file/create_file'
