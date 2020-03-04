@@ -31,6 +31,7 @@ RUN gem update --system \
   && gem install bundler:2.1.4
 
 WORKDIR /app
+COPY . .
 COPY Gemfile .
 COPY Gemfile.lock .
 RUN bundle install -j 12
