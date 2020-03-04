@@ -21,6 +21,12 @@ module Console
       folder.items.map(&:name)
     end
 
+    def self.show(directory, name)
+      return if (file = directory.find_file_by(name)).nil?
+
+      file.content
+    end
+
     # path [String]:
     #   - absolute path: '/absolute/path/to/target' starting with '/'
     #   - relative path: 'relative/path/to/target' starting with item's name.
@@ -85,12 +91,20 @@ module Console
       items.find { |item| item.name == filename }
     end
 
+    def find_file_by(filename)
+      files.find { |file| file.name == filename }
+    end
+
     def find_folder_by(filename)
       folders.find { |folder| folder.name == filename }
     end
 
     def folder?
       true
+    end
+
+    def files
+      items.select(&:file?)
     end
 
     def folders

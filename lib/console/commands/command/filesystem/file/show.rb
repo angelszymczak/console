@@ -5,7 +5,7 @@ module Console
       OPTIONS_COUNT = 0
 
       def perform
-        unless (content = Console::Filesystem.show(@directory, @target)).nil?
+        unless (content = Console::Folder.show(@directory, @target)).nil?
           content
         else
           "No such file or directory: [#{arguments.join}]"
