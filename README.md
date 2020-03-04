@@ -16,3 +16,6 @@ Usage: bin/console [--option value]
 
 ## 02 - App Login: with persisted mode
 ![Alt Text](../docs/02-app_loggin_persisted.gif)
+
+## 03 - User Login/Logout: create users
+![Alt Text](../docs/03-login_logout_create_user.gif)
