@@ -9,7 +9,7 @@ RSpec.shared_examples 'valid' do |string_input|
   end
 end
 
-RSpec.shared_examples 'invalid by wrong arguments' do |string_input|
+RSpec.shared_examples 'invalid by arguments' do |string_input|
   context "for input [#{string_input}]" do
     before { is_expected.not_to be_valid }
 
@@ -19,7 +19,7 @@ RSpec.shared_examples 'invalid by wrong arguments' do |string_input|
   end
 end
 
-RSpec.shared_examples 'invalid by wrong options' do |string_input|
+RSpec.shared_examples 'invalid by options' do |string_input|
   context "for input [#{string_input}]" do
     before { is_expected.not_to be_valid }
 

@@ -15,21 +15,6 @@ module Console
         end
       end
 
-      def valid_options?
-        valid_options_count?
-      end
-
-      private
-
-      def valid_options_count?
-        return true if options.keys.count == OPTIONS_COUNT
-
-        @errors[:options] = MalFormed.new(
-          "Expected [#{OPTIONS_COUNT}] options. You've sent #{options.count}: #{options}."
-        )
-        false
-      end
-
       register(:destroy_user, self)
     end
   end

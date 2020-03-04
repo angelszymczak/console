@@ -12,9 +12,9 @@ describe Console::Commands::Login do
 
     include_examples 'valid', 'login username password'
 
-    include_examples 'invalid by wrong arguments', 'login missing_argument'
-    include_examples 'invalid by wrong arguments', 'login username password extra_argument'
-    include_examples 'invalid by wrong options', 'login username password -extra=option'
+    include_examples 'invalid by arguments', 'login missing_argument'
+    include_examples 'invalid by arguments', 'login username password extra_argument'
+    include_examples 'invalid by options', 'login username password -extra=option'
 
     include_examples 'allow', 'login', %i[super regular read_only]
 

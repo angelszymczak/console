@@ -12,29 +12,13 @@ module Console
         end
       end
 
-      def valid_options?
-        valid_options_count?
-      end
-
       def allow?
         return true if @allowance.allow? do
           Console::User.current_user.super? ||
-            Console::User.current_user.regular? ||
-            Console::User.current_user.read_only?
+            Console::User.current_user.regular?
         end
 
         @errors[:permissions] = @allowance.message
-        false
-      end
-
-      private
-
-      def valid_options_count?
-        return true if options.keys.count == OPTIONS_COUNT
-
-        @errors[:options] = MalFormed.new(
-          "Expected [#{OPTIONS_COUNT}] options. You've sent #{options.count}: #{options}."
-        )
         false
       end
 

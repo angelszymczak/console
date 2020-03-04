@@ -12,8 +12,8 @@ describe Console::Commands::Whoami do
 
     include_examples 'valid', 'whoami'
 
-    include_examples 'invalid by wrong arguments', 'whoami extra_argument'
-    include_examples 'invalid by wrong options', 'whoami -extra=option'
+    include_examples 'invalid by arguments', 'whoami extra_argument'
+    include_examples 'invalid by options', 'whoami -extra=option'
 
     include_examples 'allow', 'whoami', %i[super regular read_only]
 

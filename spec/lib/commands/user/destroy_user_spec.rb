@@ -12,9 +12,9 @@ describe Console::Commands::DestroyUser do
 
     include_examples 'valid', 'destroy_user username'
 
-    include_examples 'invalid by wrong arguments', 'destroy_user'
-    include_examples 'invalid by wrong arguments', 'destroy_user username extra_argument'
-    include_examples 'invalid by wrong options', 'destroy_user username -invalid=option'
+    include_examples 'invalid by arguments', 'destroy_user'
+    include_examples 'invalid by arguments', 'destroy_user username extra_argument'
+    include_examples 'invalid by options', 'destroy_user username -invalid=option'
 
     include_examples 'allow', 'destroy_user', %i[super]
 

@@ -12,8 +12,8 @@ describe Console::Commands::Logout do
 
     include_examples 'valid', 'logout'
 
-    include_examples 'invalid by wrong arguments', 'logout extra_argument'
-    include_examples 'invalid by wrong options', 'logout -extra=option'
+    include_examples 'invalid by arguments', 'logout extra_argument'
+    include_examples 'invalid by options', 'logout -extra=option'
 
     include_examples 'allow', 'logout', %i[super regular read_only]
 
