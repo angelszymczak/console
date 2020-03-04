@@ -11,6 +11,7 @@ describe Console::Commands::Ls do
     context 'validations' do
       include_context 'loaded tree'
 
+      include_examples 'valid', 'ls'
       include_examples 'valid', 'ls directory'
       include_examples 'valid', 'ls /'
       include_examples 'valid', 'ls ..'
@@ -31,6 +32,12 @@ describe Console::Commands::Ls do
       before { expect(command).to be_valid }
 
       subject(:perform) { command.perform }
+
+      context 'with valid namespace' do
+        let(:directory) { '' }
+
+        it { is_expected.to eq(Console::Filesystem.pwd.items.map(&:name).join(' ')) }
+      end
 
       context 'with valid namespace' do
         let(:directory) { 'folder_level_1/folder_level_2/../folder_level_2' }
