@@ -89,8 +89,16 @@ module Console
       folders.find { |folder| folder.name == filename }
     end
 
+    def find_file_by(filename)
+      files.find { |file| file.name == filename }
+    end
+
     def folder?
       true
+    end
+
+    def files
+      items.select(&:file?)
     end
 
     def folders

@@ -50,6 +50,18 @@ module Console
       store.storing { directory.remove(item) }
     end
 
+    def self.show(directory, name)
+      return if (item = directory.find_file_by(name)).nil?
+
+      item.content
+    end
+
+    def self.metadata(directory, name)
+      return if (item = directory.find_file_by(name)).nil?
+
+      item.metadata
+    end
+
     # Build a new directory with root name '/'
     #
     # @returns [Folder < Filesystem]

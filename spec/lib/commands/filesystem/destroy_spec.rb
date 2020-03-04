@@ -13,7 +13,6 @@ describe Console::Commands::Destroy do
 
       include_examples 'valid', 'destroy folder_level_1'
 
-      include_examples 'invalid by invalid path', 'destroy unknow'
       include_examples 'invalid by exceptional arguments', 'destroy /'
 
       include_examples 'invalid by arguments', 'destroy'
@@ -41,18 +40,6 @@ describe Console::Commands::Destroy do
           expect do
             is_expected.to match(/Item.*.was destroyed/)
           end.to change { folder_level_1.items.count }.by(-1)
-        end
-      end
-
-      context 'with invalid namespace' do
-        let(:target) { 'folder_level_1/!#$%&' }
-
-        before { expect(command).not_to be_valid }
-
-        it do
-          expect do
-            is_expected.to match(/Invalid format name/)
-          end.not_to change { folder_level_2.items.count }
         end
       end
     end
