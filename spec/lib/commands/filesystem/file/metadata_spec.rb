@@ -36,10 +36,7 @@ describe Console::Commands::Metadata do
 
         before { expect(command).to be_valid }
 
-        it {
-          binding.pry
-          is_expected.to match(item_1_level_2.metadata.to_s)
-        }
+        it { is_expected.to match(item_1_level_2.metadata.to_s) }
       end
     end
   end
