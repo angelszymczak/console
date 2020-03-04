@@ -8,7 +8,7 @@ module Console
         unless Console::Filesystem.destroy(@directory, @target).nil?
           "Item [#{arguments.join}] was destroyed."
         else
-          'Invalid format name'
+          "No such file or directory: [#{arguments.join}]"
         end
       end
 
@@ -20,20 +20,13 @@ module Console
       end
 
       def valid?
-        super() && valid_exceptional_arguments? && valid_namespace?
+        super() && valid_exceptional_arguments?
       end
 
       def valid_exceptional_arguments?
         return true unless Console::Filesystem.root_path?(arguments.join)
 
         @errors[:arguments] = MalFormed.new("Cannot destroy directory [#{arguments.join}].")
-        false
-      end
-
-      def valid_namespace?
-        return true unless @directory.find_item_by(@target).nil?
-
-        @errors[:arguments] = MalFormed.new("No such file or directory: [#{arguments.join}].")
         false
       end
 
