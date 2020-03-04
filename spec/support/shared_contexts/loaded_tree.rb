@@ -7,10 +7,10 @@ RSpec.shared_context 'loaded tree' do
   let(:filesystem) { Console::Folder.initial_filesystem('/') }
   let(:folder_level_1) { Console::Folder.new('folder_level_1') }
   let(:folder_level_2) { Console::Folder.new('folder_level_2') }
-  let(:item_1_level_2) { Console::File.new('item_1_level_2', 'content_1.2') }
+  let(:item_1_level_2) { Console::File.new('item_1_level_2', 'content_1.2', 'json') }
   let(:folder_level_3) { Console::Folder.new('folder_level_3') }
   let(:folder_level_4) { Console::Folder.new('folder_level_4') }
-  let(:item_1_level_4) { Console::File.new('item_1_level_4', 'content_1.4') }
+  let(:item_1_level_4) { Console::File.new('item_1_level_4', 'content_1.4', 'svg' ) }
   let(:store) { Console::Store.new([super_user, regular_user, read_only_user], filesystem) }
 
   before do

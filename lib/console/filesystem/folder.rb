@@ -27,6 +27,12 @@ module Console
       file.content
     end
 
+    def self.metadata(directory, name)
+      return if (file = directory.find_file_by(name)).nil?
+
+      file.metadata
+    end
+
     # path [String]:
     #   - absolute path: '/absolute/path/to/target' starting with '/'
     #   - relative path: 'relative/path/to/target' starting with item's name.
