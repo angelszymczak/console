@@ -11,11 +11,11 @@ describe Console::Folder do
   end
 
   describe '#add' do
-    let(:root_item) { described_class.new('root') }
+    include_context 'loaded tree'
 
-    after { expect(subject.parent).to be(root_item) }
+    after { expect(subject.parent).to be(filesystem) }
 
-    subject(:added_item) { root_item.add(item) }
+    subject(:added_item) { filesystem.add(item) }
 
     context 'adding folder' do
       let(:item) { described_class.new('sub_folder') }
@@ -30,27 +30,12 @@ describe Console::Folder do
     end
   end
 
-  context 'with loaded tree filesystem' do
-    let(:root_item) { described_class.initial_filesystem('root') }
-    let(:folder_level_1) { described_class.new('folder_level_1') }
-    let(:folder_level_2) { described_class.new('folder_level_2') }
-    let(:item_B) { described_class.new('item_level_2') }
-    let(:folder_level_3) { described_class.new('folder_level_3') }
-    let(:folder_level_4) { described_class.new('folder_level_4') }
-
-    before do
-      root_item
-        .add(folder_level_1)
-        .add(folder_level_2)
-        .add(folder_level_3)
-        .add(folder_level_4)
-
-      folder_level_2.add(item_B)
-    end
+  context 'with' do
+    include_context 'loaded tree'
 
     describe '#path' do
-      it { expect(folder_level_3.path).to eq('root/folder_level_1/folder_level_2/folder_level_3') }
-      it { expect(item_B.path).to eq('root/folder_level_1/folder_level_2/item_level_2') }
+      it { expect(folder_level_3.path).to eq('/folder_level_1/folder_level_2/folder_level_3') }
+      it { expect(item_1_level_2.path).to eq('/folder_level_1/folder_level_2/item_1_level_2') }
     end
 
     describe '#browse' do
@@ -58,9 +43,9 @@ describe Console::Folder do
 
       context 'when directory is root and receives back symbol' do
         let(:sought_path) { '..' }
-        let(:directory) { root_item }
+        let(:directory) { filesystem }
 
-        it { is_expected.to be(root_item) }
+        it { is_expected.to be(filesystem) }
       end
 
       context 'when directory is level 3 and receives back symbol' do
@@ -85,6 +70,20 @@ describe Console::Folder do
 
         it { is_expected.to be_nil }
       end
+    end
+  end
+
+  describe '.create' do
+    include_context 'loaded tree'
+
+    subject(:new_folder) { described_class.create(filesystem, folder_name) }
+
+    context 'valid' do
+      after { is_expected.to be_valid }
+
+      let(:folder_name) { 'valid_folder_name' }
+
+      it { expect(new_folder.parent).to eq(filesystem) }
     end
   end
 end
