@@ -35,7 +35,7 @@ RSpec.shared_examples 'invalid by exceptional arguments' do |string_input|
 
     let(:input) { string_input }
 
-    it { expect(subject.error_message).to match(/Cannot create directory/) }
+    it { expect(subject.error_message).to match(/Cannot.*.directory/) }
   end
 end
 
