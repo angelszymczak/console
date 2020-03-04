@@ -27,7 +27,7 @@ describe Console::Filesystem do
 
         before { is_expected.not_to be_valid_name_format }
 
-        it { expect(subject.error_message).to match(/Name.*.invalid format/) }
+        it { expect(subject.error_message).to match(/Invalid format name/) }
       end
 
       context 'by name size' do

@@ -12,10 +12,10 @@ describe Console::Commands::CreateUser do
 
     include_examples 'valid', 'create_user new_username new_password -role=regular'
 
-    include_examples 'invalid by wrong arguments', 'create_user'
-    include_examples 'invalid by wrong arguments', 'create_user username password extra_argument'
-    include_examples 'invalid by wrong options', 'create_user username password -invalid=option'
-    include_examples 'invalid by wrong options', 'create_user username password -role=regular -extra=option'
+    include_examples 'invalid by arguments', 'create_user'
+    include_examples 'invalid by arguments', 'create_user username password extra_argument'
+    include_examples 'invalid by options', 'create_user username password -invalid=option'
+    include_examples 'invalid by options', 'create_user username password -role=regular -extra=option'
 
     include_examples 'allow', 'create_user', %i[super]
 

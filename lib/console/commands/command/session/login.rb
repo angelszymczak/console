@@ -2,6 +2,7 @@ module Console
   module Commands
     class Login < Session
       ARGS_COUNT = 2
+      OPTIONS_COUNT = 0
 
       def perform
         unless (user = Console::User.login(*arguments)).nil?

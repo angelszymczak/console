@@ -5,7 +5,7 @@ RSpec.shared_context 'loaded store' do
 
   let(:common_password) { 'password' }
 
-  let(:filesystem) { instance_double(Console::Folder, name: '/') }
+  let(:filesystem) { Console::Filesystem.initial_filesystem }
 
   let(:store) { Console::Store.new([super_user, regular_user, read_only_user], filesystem) }
 

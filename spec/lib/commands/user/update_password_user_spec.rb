@@ -12,11 +12,12 @@ describe Console::Commands::UpdatePasswordUser do
 
     include_examples 'valid', 'update_password new_password'
 
-    include_examples 'invalid by wrong arguments', 'update_password'
-    include_examples 'invalid by wrong arguments', 'update_password new_password extra_argument'
-    include_examples 'invalid by wrong options', 'update_password new_password -invalid=option'
+    include_examples 'invalid by arguments', 'update_password'
+    include_examples 'invalid by arguments', 'update_password new_password extra_argument'
+    include_examples 'invalid by options', 'update_password new_password -invalid=option'
 
-    include_examples 'allow', 'update_password', %i[super regular read_only]
+    include_examples 'allow', 'update_password', %i[super regular]
+    include_examples 'not allow', 'update_password', %i[read_only]
 
     context '#perform' do
       let(:input) { "update_password #{new_password}" }

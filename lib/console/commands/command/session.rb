@@ -4,13 +4,6 @@ module Console
       def allow?
         true
       end
-
-      def valid_options?
-        return true if options.empty?
-
-        @errors[:options] = MalFormed.new("Unexpected options: [#{options}].")
-        false
-      end
     end
   end
 end

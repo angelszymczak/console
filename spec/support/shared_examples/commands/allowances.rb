@@ -22,7 +22,7 @@ RSpec.shared_examples 'not allow' do |string_input, roles|
         is_expected.not_to be_allow
       end
 
-      it { expect(subject.error_message).to match(/permissions: There aren't enough permissions/) }
+      it { expect(subject.error_message).to match(/There aren't enough permissions/) }
     end
   end
 end

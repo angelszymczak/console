@@ -104,7 +104,7 @@ module Console
       end
 
       def valid_options?
-        raise NotImplementedError, "#{self.class} has not implemented method '#{__method__}'"
+        valid_options_count?
       end
 
       def error_message
@@ -134,6 +134,13 @@ module Console
 
       def arguments_condition
         arguments.count == self.class::ARGS_COUNT
+      end
+
+      def valid_options_count?
+        return true if options.keys.count == self.class::OPTIONS_COUNT
+
+        @errors[:options] = MalFormed.new("Unexpected options: [#{options}].")
+        false
       end
     end
   end
