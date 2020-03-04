@@ -8,6 +8,12 @@ module Console
       end
     end
 
+    def self.cd(directory, name)
+      return if (folder = directory.find_folder_by(name)).nil?
+
+      self.pwd = folder
+    end
+
     # path [String]:
     #   - absolute path: '/absolute/path/to/target' starting with '/'
     #   - relative path: 'relative/path/to/target' starting with item's name.
