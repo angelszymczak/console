@@ -31,7 +31,7 @@ OptionParser.new do |parser|
 end.parse!
 
 case options
-when ->(o) { o[:seed] && o.size == 1 } then Console::KeyGenerator.generate!(options[:seed])
+when ->(o) { o[:seed] && o.size == 1 } then puts Console::KeyGenerator.generate!(options[:seed])
 when ->(o) { o[:persisted] && o.size == 1 } then Console::Prompt.run!(options)
 when ->(o) { o.empty? } then Console::Prompt.run!({})
 end
