@@ -47,6 +47,8 @@ require 'console/commands/command/filesystem/folder/ls'
 
 require 'console/commands/command/filesystem/file'
 require 'console/commands/command/filesystem/file/create_file'
+require 'console/commands/command/filesystem/file/show'
+require 'console/commands/command/filesystem/file/metadata'
 
 module Console
 end

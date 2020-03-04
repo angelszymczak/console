@@ -30,22 +30,7 @@ module Console
 
       def valid_path?
         @content = arguments.pop
-        path = arguments.join
-        @directory, @target, array_path = Console::Folder.directory_target_path(path)
-        @directory = Console::Folder.seek(@directory, array_path) unless array_path.empty?
-        return true unless @directory.nil?
-
-        @errors[:arguments] = MalFormed.new("No such file or directory: [#{path}]")
-        false
-      end
-
-      def valid_exceptional_arguments?
-        return true unless
-          Console::Filesystem.root_path?(arguments.join) ||
-            arguments.join.end_with?(Console::Filesystem::DIRECTORY_SEPARATOR)
-
-        @errors[:arguments] = MalFormed.new("Cannot create directory [#{arguments.join}].")
-        false
+        super()
       end
 
       def valid_namespace?
