@@ -1,21 +1,20 @@
 ## Step one: build your image
 - docker build . -t your_company:1.0.0
 
-## Runners
-- bin/console -h
+## Console Simulator
 
-```
-Usage: bin/console [--option value]
-    -p, --persisted FILE             Persisted mode
-    -k, --key APP_KEY                Application Key Generator, must be exported to APP_KEY environment variable or config.yml
-    -s, --secret SECRET              Encrypt Key Generator, must be exported to SECRET environment variable or config.yml
-```
+Simple console to handle files and folders by entering commands by keyboard, similar to
+Bash, for example.
+All resources must be kept in memory and not persisted to disk.
+User system with several roles:
 
-## 01 - Setup App
-![Alt Text](../docs/01-app_setup.gif)
+Super users (super): can read and create files. They are also the only ones that can create and
+Delete users.
+Normal users (regular): they can read and create files and can edit their own password.
+Read-only users (read_only): Only existing files can be read. They can't edit their
+own password.
 
-## 02 - App Login: with persisted mode
-![Alt Text](../docs/02-app_loggin_persisted.gif)
+By default, files, folders and users are kept only in memory, so they should
+be generated again at the beginning of the application and are removed on exit. To persist the information, a parameter with the file name must be sent.
 
-## 03 - User Login/Logout: create users
-![Alt Text](../docs/03-login_logout_create_user.gif)
+Look at the [Wiki](https://gitlab.com/angelszymczak/console/-/wikis/00---Home) for more details of the operation.
