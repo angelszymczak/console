@@ -17,25 +17,26 @@ module Console
         @@commands[action] = command
       end
 
-      # input <String>: string will be splitted to build attributes for Command initializer.
-      #
-      # returns [Subclass<Command>]
       def self.build!(input)
-        array_input = input.split(COMMAND_SEPARATOR)
+        action, tail_input = input.split(COMMAND_SEPARATOR, 2)
+        command = parse_command(action)
 
-        command, action = parse_action(array_input)
-        arguments = parse_arguments(array_input)
-        options = parse_options(array_input)
+        array_input = command.split_arguments(tail_input)
+        arguments = command.parse_arguments(array_input)
+        options = command.parse_options(array_input)
         raise MalFormed, "Malformed command: [#{input}]." if array_input.any?
 
-        command.new(action, arguments, options)
+        command.new(arguments, options)
       end
 
-      def self.parse_action(input)
-        raise MalFormed, 'Empty command.' if (action = input.shift.to_s.to_sym).nil?
-        raise MalFormed, "Unknow command [#{action}]." if (klass = commands[action]).nil?
+      def self.parse_command(action)
+        raise MalFormed, 'Empty command.' if action.nil?
+        return commands[action.to_sym] unless  (commands[action.to_sym]).nil?
+        raise MalFormed, "Unknow command [#{action}]."
+      end
 
-        [klass, action]
+      def self.split_arguments(input)
+        (input || '').split(COMMAND_SEPARATOR)
       end
 
       def self.parse_arguments(input)
@@ -63,14 +64,10 @@ module Console
         input.start_with?(OPTION_DASH) && input.include?(OPTION_JOINER)
       end
 
-      private_class_method :commands, :parse_action, :parse_arguments, :parse_options,
-        :options_index, :option_input?
+      private_class_method :commands, :options_index, :option_input?
 
-      attr_accessor :action, :arguments, :options, :errors
+      attr_accessor :arguments, :options, :errors
 
-      # action [Symbol]: referes to command
-      #   - command ...
-      #
       # arguments [Array<String>]: list of commmand's arguments
       #   - command ARG_1 ARG_2 ...
       #
@@ -78,11 +75,10 @@ module Console
       #   - command ARG_1 ARG_2 OPTION=value ...
       #
       # In this order, if command comes mixed, validation throw a malformed error.
-      def initialize(action, arguments, options)
+      def initialize(arguments, options)
         @errors = {}
         @allowance = Allowance.new
 
-        self.action = action
         self.arguments = arguments
         self.options = options
       end
