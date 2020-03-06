@@ -13,7 +13,10 @@ module Console
       end
 
       def allow?
-        return true if @allowance.allow? { Console::User.current_user.super? }
+        return true if @allowance.allow? do
+          Console::User.current_user.super? ||
+            Console::User.current_user.regular?
+        end
 
         @errors[:permissions] = @allowance.message
         false
