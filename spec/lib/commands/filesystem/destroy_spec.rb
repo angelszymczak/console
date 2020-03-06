@@ -19,8 +19,8 @@ describe Console::Commands::Destroy do
       include_examples 'invalid by arguments', 'destroy folder_level_1 extra_argument'
       include_examples 'invalid by options', 'destroy folder_level_1 -invalid=option'
 
-      include_examples 'allow', 'destroy target', %i[super]
-      include_examples 'not allow', 'destroy target', %i[regular read_only]
+      include_examples 'allow', 'destroy target', %i[super regular]
+      include_examples 'not allow', 'destroy target', %i[read_only]
     end
 
     context '#perform' do
