@@ -1,6 +1,8 @@
 module Console
   module Commands
     class File < Filesystem
+      CONTENT_DELIMETER = /('|")/
+
       def valid_exceptional_arguments?
         return true unless
           Console::Filesystem.root_path?(arguments.join) ||
