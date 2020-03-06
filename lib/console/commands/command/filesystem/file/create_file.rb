@@ -4,6 +4,24 @@ module Console
       ARGS_COUNT = 2
       MAX_OPTIONS_COUNT = 1
       METADATA_FLAG = '-type'
+      CONTENT_DELIMETER = /('|")/
+
+      def self.split_arguments(input)
+        return [] if input.nil?
+
+        first_index = input.index(CONTENT_DELIMETER)
+        return [input] if first_index.nil?
+
+        head_input = super(input[0..(first_index - 1)])
+        delimiter = input[first_index]
+        last_index = input.rindex(delimiter)
+        raise MalFormed, "Malformed command: [#{input}]." unless first_index < last_index
+
+        content_input = input[(first_index + 1)..(last_index - 1)]
+        tail_input = super(input[(last_index + 1)..])
+
+        head_input + [content_input] + tail_input
+      end
 
       def perform
         new_file = Console::File.create(@directory, @target, @content, options[METADATA_FLAG])
